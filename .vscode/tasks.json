@@ -1,0 +1,43 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Build project",
+			"command": "/bin/g++",
+			"args": [
+				"-g",
+				"${workspaceFolder}/*/*.cpp",
+				"-o",
+				"${workspaceFolder}/build/main.o"
+			],
+			"options": {
+				"cwd": "/bin"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build",
+			"dependsOn": "Delete old build"
+		},
+		{
+			"type": "process",
+			"label": "My build",
+			"command": "${workspaceFolder}/build/main.o",
+			"dependsOn": "Build project",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Delete old build",
+			"command": [
+				"touch ${workspaceFolder}/build/main.o",
+				" && rm ${workspaceFolder}/build/main.o"
+			]
+		}
+	]
+}
