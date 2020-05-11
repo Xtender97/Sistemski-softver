@@ -29,7 +29,7 @@ string match_line(string line)
     // *<literal>(%r<num>), *<simbol>(%pc/%r<num>)
     string jump_double_operand = "(\\*" + simbol + "\\((%r[0-7]|%pc)\\))|(\\*" + literal + "\\(%r[0-6]\\))";
 
-    string no_operands_instruction = "(halt|iret|ret)";
+    string no_operands_instruction = "(halt|iret|ret)\\s*";
 
     string single_operand_jump_instruction = "(int|call|jmp|jeq|jne|jgt)\\s+(" + jump_single_operand + "|" + jump_double_operand + ")\\s*";
 
@@ -62,6 +62,15 @@ string match_line(string line)
     // .section <ime_sekcije>:
     string section_directive = "\\.section\\s+" + simbol + ":\\s*";
     cout << "SECTION DIRECTIVE: " << section_directive << endl;
+
+    // labela:
+    string lonely_label = simbol + ":\\s*";
+
+    string directive = "(" + section_directive + ")|(" + equ_directive + ")|(" + skip_directive + ")|(" + end_directive + ")|(" + list_directive + ")";
+    string instruction = "(" + no_operands_instruction + ")|(" + single_operand_jump_instruction + ")|(" + single_operand_data_instruction + ")|(" + double_operand_instruction + ")";
+
+    // labela : <directive>|<instruction>
+    string label_line = "(" + lonely_label + ")(" + directive + "|" + instruction + ")";
 
     regex reg(double_operand_instruction);
 
