@@ -14,6 +14,8 @@ string Operand::operandType[] = {
     "LITERAL",
     "SIMBOL",
     "REGISTER",
+    "LITERAL_REGISTER",
+    "SIMBOL_REGISTER",
     "ERROR"};
 
 string Operand::registerPartType[] =
@@ -29,18 +31,21 @@ Operand::Operand()
     stringOperand = "no operand";
 };
 
-Operand::Operand(string operand)
+Operand::Operand(string operand, Type instruction_type)
 {
     stringOperand = operand;
-    OperandInfo info = selectAdressingAndType(operand);
+    OperandInfo info = selectAdressingAndType(operand, instruction_type);
     type = info.type;
     adressing = info.adressing;
     registerPart = info.part;
+    op_reg = info.reg;
+    op_simbol = info.simbol;
+    op_literal = info.literal;
 };
 
 //EXTRACTS INFORMATION ABOUT OPERAND FROM STRING
 
-OperandInfo Operand::selectAdressingAndType(string operand)
+OperandInfo Operand::selectAdressingAndType(string operand, Type instruction_type)
 {
     regex regex_data_single_operand(data_single_operand);
     smatch match;
@@ -48,7 +53,7 @@ OperandInfo Operand::selectAdressingAndType(string operand)
 
     //DATA SINGLE OPERANDS
 
-    if (regex_match(operand, match, regex_data_single_operand))
+    if (regex_match(operand, match, regex_data_single_operand) && instruction_type == DATA)
     {
         return extractDataSingleOperand(operand);
     }
@@ -56,9 +61,25 @@ OperandInfo Operand::selectAdressingAndType(string operand)
     // JUMP SINGLE OPERAND
 
     regex regex_jump_single_operand(jump_single_operand);
-    if (regex_match(operand, match, regex_jump_single_operand))
+    if (regex_match(operand, match, regex_jump_single_operand) && instruction_type == JUMP)
     {
         return extractJumpSingleOperand(operand);
+    }
+
+    //JUMP DOUBLE OPERAND
+
+    regex regex_jump_double_operand(jump_double_operand);
+    if (regex_match(operand, match, regex_jump_double_operand))
+    {
+        return extractJumpDoubleOperand(operand);
+    }
+
+    //DATA DOUBLE OPERAND
+
+    regex regex_data_double_operand(data_double_operand);
+    if (regex_match(operand, match, regex_data_double_operand))
+    {
+        return extractDataDoubleOperand(operand);
     }
 
     info = {TYPE_ERROR, ADDR_ERROR, REG_PART_ERROR};
@@ -69,23 +90,25 @@ OperandInfo Operand::selectAdressingAndType(string operand)
 
 OperandInfo Operand::extractDataSingleOperand(string operand)
 {
+
     OperandInfo info;
     smatch match;
     //IMMEDIATE AND LITERAL
 
-    regex immediate_literal("\\$" + literal);
+    regex immediate_literal("\\$(" + literal + ")");
+    // cout << "Immediate literal regex: " << "\\$" + literal << endl;
     if (regex_match(operand, match, immediate_literal))
     {
-        info = {LITERAL, IMMEDIATE, NOT_REGISTER};
+        info = {LITERAL, IMMEDIATE, NOT_REGISTER, "none", "none", match.str(1)};
         return info;
     }
 
     //IMMEDIATE AND SIMBOL
 
-    regex immediate_simbol("\\$" + simbol);
+    regex immediate_simbol("\\$(" + simbol + ")");
     if (regex_match(operand, match, immediate_simbol))
     {
-        info = {SIMBOL, IMMEDIATE, NOT_REGISTER};
+        info = {SIMBOL, IMMEDIATE, NOT_REGISTER, "none", match.str(1), "none"};
         return info;
     }
 
@@ -94,7 +117,7 @@ OperandInfo Operand::extractDataSingleOperand(string operand)
     regex regex_absolute_literal(literal);
     if (regex_match(operand, match, regex_absolute_literal))
     {
-        info = {LITERAL, MEMORY, NOT_REGISTER};
+        info = {LITERAL, MEMORY, NOT_REGISTER, "none", "none", match.str(0)};
         return info;
     }
 
@@ -103,30 +126,30 @@ OperandInfo Operand::extractDataSingleOperand(string operand)
     regex regex_absolute_simbol(simbol);
     if (regex_match(operand, match, regex_absolute_simbol))
     {
-        info = {SIMBOL, MEMORY, NOT_REGISTER};
+        info = {SIMBOL, MEMORY, NOT_REGISTER, "none", match.str(0), "none"};
         return info;
     }
 
     //REGISTER DIRECT
 
-    regex regex_register_direct("%r[0-7](l|h)?");
+    regex regex_register_direct("%(r[0-7])(l|h)?");
     if (regex_match(operand, match, regex_register_direct))
     {
         RegisterPart register_part = WHOLE;
-        if (match.str(1) != "")
+        if (!match.str(2).empty())
         {
-            register_part = match.str(1) == "h" ? HIGH : LOW;
+            register_part = match.str(2) == "h" ? HIGH : LOW;
         }
-        info = {REGISTER, REGISTER_DIRECT, register_part};
+        info = {REGISTER, REGISTER_DIRECT, register_part, match.str(1), "none", "none"};
         return info;
     }
 
     //REGISTER INDIRECT
 
-    regex regex_register_indirect("\\(%r[0-7]\\)");
+    regex regex_register_indirect("\\(%(r[0-7])\\)");
     if (regex_match(operand, match, regex_register_indirect))
     {
-        info = {REGISTER, REGISTER_INDIRECT, WHOLE};
+        info = {REGISTER, REGISTER_INDIRECT, WHOLE, match.str(1), "none", "none"};
         return info;
     }
 
@@ -143,64 +166,64 @@ OperandInfo Operand::extractJumpSingleOperand(string operand)
 
     //SIMBOL
 
-    regex regex_simbol("(\\*)?" + simbol);
+    regex regex_simbol("(\\*)?(" + simbol + ")");
     if (regex_match(operand, match, regex_simbol))
     {
 
         //SIMBOL AND ABSOLUTE
 
-        if (match.str(1) == "*")
+        if (match.str(1).compare("*") == 0)
         {
-            info = {SIMBOL, MEMORY, NOT_REGISTER};
+            info = {SIMBOL, MEMORY, NOT_REGISTER, "none", match.str(2), "none"};
             return info;
         }
 
         //SIMBOL AND IMMEDIATE
         else
         {
-            info = {SIMBOL, IMMEDIATE, NOT_REGISTER};
+            info = {SIMBOL, IMMEDIATE, NOT_REGISTER, "none", match.str(2), "none"};
             return info;
         }
     }
 
     //LITERAL
 
-    regex regex_literal("(\\*)?" + literal);
+    regex regex_literal("(\\*)?(" + literal + ")");
     if (regex_match(operand, match, regex_literal))
     {
 
         //LITERAL AND ABSOLUTE
 
-        if (match.str(1) == "*")
+        if (match.str(1).compare("*") == 0)
         {
-            info = {LITERAL, MEMORY, NOT_REGISTER};
+            info = {LITERAL, MEMORY, NOT_REGISTER, "none", "none", match.str(2)};
             return info;
         }
 
         //LITERAL AND IMMEDIATE
         else
         {
-            info = {LITERAL, IMMEDIATE, NOT_REGISTER};
+            info = {LITERAL, IMMEDIATE, NOT_REGISTER, "none", "none", match.str(2)};
             return info;
         }
     }
 
     //REGISTER DIRECT
 
-    regex regex_register_direct("\\*%r[0-7]");
+    regex regex_register_direct("\\*%(r[0-7])");
     if (regex_match(operand, match, regex_register_direct))
     {
 
-        info = {REGISTER, REGISTER_DIRECT, WHOLE};
+        info = {REGISTER, REGISTER_DIRECT, WHOLE, match.str(1), "none", "none"};
         return info;
     }
 
     //REGISTER INDIRECT
 
-    regex regex_register_indirect("\\*\\(%r[0-7]\\)");
+    regex regex_register_indirect("\\*\\(%(r[0-7])\\)");
     if (regex_match(operand, match, regex_register_indirect))
     {
-        info = {REGISTER, REGISTER_INDIRECT, WHOLE};
+        info = {REGISTER, REGISTER_INDIRECT, WHOLE, match.str(1), "none", "none"};
         return info;
     }
 
@@ -208,14 +231,70 @@ OperandInfo Operand::extractJumpSingleOperand(string operand)
     return info;
 }
 
+OperandInfo Operand::extractJumpDoubleOperand(string operand)
+{
+    OperandInfo info;
+    smatch match;
 
+    // WITH SIMOBOL
+
+    regex regex_simbol_register("\\*(" + simbol + ")\\(%(r[0-7]|pc)\\)"); // % moved in fornt of or
+    if (regex_match(operand, match, regex_simbol_register))
+    {
+        info = {SIMBOL_REGISTER, REGISTER_INDIRECT_WITH_OFFSET, WHOLE, match.str(2), match.str(1), "none"};
+        return info;
+    }
+
+    // WITH LITERAL
+
+    regex regex_literal_register("\\*(" + literal + ")\\(%(r[0-6])\\)");
+    if (regex_match(operand, match, regex_literal_register))
+    {
+        info = {LITERAL_REGISTER, REGISTER_INDIRECT_WITH_OFFSET, WHOLE, match.str(2), "none", match.str(1)};
+        return info;
+    }
+
+    info = {TYPE_ERROR, ADDR_ERROR, REG_PART_ERROR};
+    return info;
+}
+
+OperandInfo Operand::extractDataDoubleOperand(string operand)
+{
+    OperandInfo info;
+    smatch match;
+
+    //WITH SIMBOL
+
+    regex regex_simbol_register("(" + simbol + ")\\(%(r[0-7]|pc)\\)"); // % moved in fornt of or
+    if (regex_match(operand, match, regex_simbol_register))
+    {
+        info = {SIMBOL_REGISTER, REGISTER_INDIRECT_WITH_OFFSET, WHOLE, match.str(2), match.str(1), "none"};
+        return info;
+    }
+
+    // WITH LITERAL
+    
+    regex regex_literal_register("(" + literal + ")\\(%(r[0-6])\\)");
+    if (regex_match(operand, match, regex_literal_register))
+    {
+        info = {LITERAL_REGISTER, REGISTER_INDIRECT_WITH_OFFSET, WHOLE, match.str(2), "none", match.str(1)};
+        return info;
+    }
+
+    info = {TYPE_ERROR, ADDR_ERROR, REG_PART_ERROR};
+    return info;
+}
 
 void Operand::print()
 {
-    cout << "Operand type: " << operandType[type] << endl;
-    cout << "Operand adressing: " << addressingType[adressing] << endl;
+    cout << "\tOperand type: " << operandType[type] << endl;
+    cout << "\tOperand adressing: " << addressingType[adressing] << endl;
     if (registerPart != NOT_REGISTER)
     {
-        cout << "Operand register part: " << registerPartType[registerPart] << endl;
+        cout << "\tOperand register part: " << registerPartType[registerPart] << endl;
     }
+
+    cout << "\tRegister: " << op_reg << endl;
+    cout << "\tSimbol: " << op_simbol << endl;
+    cout << "\tLiteral: " << op_literal << endl;
 }

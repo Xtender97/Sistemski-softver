@@ -10,12 +10,16 @@ bool match_line(string line)
     regex regex_lonely_label(lonely_label);
     smatch match;
 
+    //DIRECTIVE 
+
     if (regex_match(line, match, regex_directive))
     {
         cout << "Line: " << line << " is directive" << endl
              << endl;
         return true;
     }
+
+    //INSTRUCTION
 
     if (regex_match(line, match, regex_instruction))
 
@@ -26,12 +30,16 @@ bool match_line(string line)
         return true;
     }
 
+    //LABEL LINE
+
     if (regex_match(line, match, regex_label_line))
     {
         cout << "Line: " << line << " is label line" << endl
              << endl;
         return true;
     }
+
+    //LONELY LABEL
 
     if (regex_match(line, match, regex_lonely_label))
     {

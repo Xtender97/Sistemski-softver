@@ -15,9 +15,21 @@ unordered_map<string, InstructionInfo> Instruction::InstructionMap = {
     {"jne", {7, JUMP, 1}},
     {"jgt", {8, JUMP, 1}},
     {"push", {9, DATA, 1}},
-    {"pop", {10, DATA, 1}}
-
-};
+    {"pop", {10, DATA, 1}},
+    {"xchg", {11, DATA, 2}},
+    {"mov", {12, DATA, 2}},
+    {"add", {13, DATA, 2}},
+    {"sub", {14, DATA, 2}},
+    {"mul", {15, DATA, 2}},
+    {"div", {16, DATA, 2}},
+    {"cmp", {17, DATA, 2}},
+    {"not", {18, DATA, 2}},
+    {"and", {19, DATA, 2}},
+    {"or", {20, DATA, 2}},
+    {"xor", {21, DATA, 2}},
+    {"test", {22, DATA, 2}},
+    {"shl", {23, DATA, 2}},
+    {"shr", {24, DATA, 2}}};
 unordered_map<string, int> Instruction::RegisterMap = {
     {"r0", 0x0},
     {"r1", 0x1},
@@ -41,12 +53,12 @@ Instruction::Instruction(string mnemonic, string opOne, string opTwo, string lab
     sizeOfOperands = IMPLICIT;
     if (numberOfOperands >= 1)
     {
-        operandOne = Operand(opOne);
+        operandOne = Operand(opOne, type);
     }
 
     if (numberOfOperands == 2)
     {
-        operandTwo = Operand(opTwo);
+        operandTwo = Operand(opTwo, type);
     }
 };
 
@@ -56,7 +68,7 @@ void Instruction::setOperandSizes(string size)
 {
     if (!size.empty())
     {
-        sizeOfOperands = size == "b" ? BYTE : WORD;
+        sizeOfOperands = size == "b" ? OperandSize::BYTE : OperandSize::WORD;
     }
 }
 
@@ -126,6 +138,16 @@ Instruction *createInstruction(string line)
     {
 
         instruction = new Instruction(match.str(1), match.str(3), "", "");
+        instruction->setOperandSizes(match.str(2));
+        instruction->print();
+    }
+
+    regex regex_double_operand_instruction(double_operand_instruction);
+    //cout << double_operand_instruction << endl;
+
+    if (regex_match(line, match, regex_double_operand_instruction))
+    {
+        instruction = new Instruction(match.str(1), match.str(3), match.str(9), "");
         instruction->setOperandSizes(match.str(2));
         instruction->print();
     }

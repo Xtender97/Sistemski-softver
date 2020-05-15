@@ -3,29 +3,13 @@
 #include <unordered_map>
 #include "Line.h"
 #include "Operand.h"
+#include "Enums.h"
 
 using namespace std;
 
-enum Type
-{
-    JUMP,
-    DATA,
-    NO_OPERAND
-};
 
-struct InstructionInfo
-{
-    int opCode;
-    Type type;
-    int numberOfOperands;
-};
 
-enum OperandSize
-{
-    BYTE,
-    WORD,
-    IMPLICIT
-};
+
 class Instruction : public Line
 {
 private:
