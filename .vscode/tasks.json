@@ -38,6 +38,11 @@
 				"touch ${workspaceFolder}/build/main.o",
 				" && rm ${workspaceFolder}/build/main.o"
 			]
+		},
+		{
+			"type": "shell",
+			"label": "Run build",
+			"command": "${workspaceFolder}/build/main.o"
 		}
 	]
 }

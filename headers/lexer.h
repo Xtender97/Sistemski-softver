@@ -5,4 +5,4 @@
 
 using namespace std;
 
-string match_line(string line);
+bool match_line(string line);
