@@ -19,3 +19,7 @@ Directive::Directive(string name, string label) : Line(!label.empty(), label, tr
     directive_name = name;
     type = DirectiveTypesMap[name];
 };
+
+void  Directive::print(){
+    cout << "Directive type: " << directive_name << endl << endl;
+};

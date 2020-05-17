@@ -43,21 +43,21 @@ std::string list_directive = "(\\.(global|extern)\\s+" + simbol_list + "\\s*)|(\
 //cout << "LIST DIRECTIVE: " << list_directive << endl;
 
 //.end
-std::string end_directive = "\\.end\\s*";
+std::string end_directive = "\\.(end)\\s*";
 //cout << "END DIRECTIVE: " << end_directive << endl;
 
 // .skip <literal>
-std::string skip_directive = "\\.skip\\s+" + literal + "\\s*";
+std::string skip_directive = "\\.(skip)\\s+" + literal + "\\s*";
 //cout << "SKIP DIRECTIVE: " << skip_directive << endl;
 
 std::string expression = "(" + simbol + "|" + literal + ")\\s*((\\+|-)\\s?(" + simbol + "|" + literal + ")\\s?)*";
 
 // .equ <simbol>, <izraz>
-std::string equ_directive = "\\.equ\\s+" + simbol + ",\\s*" + expression + "\\s*";
+std::string equ_directive = "\\.(equ)\\s+" + simbol + ",\\s*" + expression + "\\s*";
 //cout << "EQU DIRECTIVE: " << equ_directive << endl;
 
 // .section <ime_sekcije>:
-std::string section_directive = "\\.section\\s+" + simbol + ":\\s*";
+std::string section_directive = "\\.(section)\\s+" + simbol + ":\\s*";
 //cout << "SECTION DIRECTIVE: " << section_directive << endl;
 
 // labela:

@@ -1,6 +1,8 @@
 #include "../headers/lexer.h"
 #include "../headers/Instruction.h"
 #include "../headers/regex.h"
+#include "../headers/Directive.h"
+#include "../headers/ListDirective.h"
 
 bool match_line(string line)
 {
@@ -10,12 +12,60 @@ bool match_line(string line)
     regex regex_lonely_label(lonely_label);
     smatch match;
 
-    //DIRECTIVE 
+    //DIRECTIVE
 
     if (regex_match(line, match, regex_directive))
     {
         cout << "Line: " << line << " is directive" << endl
              << endl;
+        
+        regex regex_list(list_directive);
+        if (regex_match(line, match, regex_list))
+        {
+            ListDirective *directive;
+
+            if (match.str(1) != "")
+            {
+                directive = new ListDirective(match.str(2), match.str(3), "");
+            }
+            else
+            {
+                directive = new ListDirective(match.str(6), match.str(7), "");
+            }
+
+            directive = (ListDirective *)directive;
+            directive->print();
+        }
+        else
+        {
+            Directive *directive;
+            regex regex_end(end_directive);
+            if (regex_match(line, match, regex_end))
+            {
+                directive = new Directive(match.str(1), "");
+            }
+
+            regex regex_skip(skip_directive);
+            if (regex_match(line, match, regex_skip))
+            {
+                directive = new Directive(match.str(1), "");
+            }
+
+            regex regex_equ(equ_directive);
+            if (regex_match(line, match, regex_equ))
+            {
+                directive = new Directive(match.str(1), "");
+            }
+
+            regex regex_section(section_directive);
+            if (regex_match(line, match, regex_section))
+            {
+                directive = new Directive(match.str(1), "");
+            }
+
+            directive->print();
+        }
+
         return true;
     }
 
@@ -26,7 +76,7 @@ bool match_line(string line)
     {
         cout << "Line: " << line << " is instruction" << endl
              << endl;
-        Instruction* instruction = createInstruction(line);
+        Instruction *instruction = createInstruction(line);
         return true;
     }
 

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 {
     bool status = true;
 
-    ifstream file("files/prog.s");
+    ifstream file("files/directive.s");
     string line;
     while (getline(file, line))
     {

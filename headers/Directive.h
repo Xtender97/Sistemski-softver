@@ -11,4 +11,5 @@ public:
     DirectiveType type;
     string directive_name;
     Directive(string name, string label);
+    void print();
 };
