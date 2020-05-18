@@ -49,7 +49,8 @@ enum RegisterPart
     REG_PART_ERROR
 };
 
-enum DirectiveType {
+enum DirectiveType
+{
     END,
     SKIP,
     GLOBAL,
@@ -62,7 +63,14 @@ enum DirectiveType {
 
 // TYPE OF ELEMNTS OF LISTS IN DIRECTIVES
 
-enum ListType {
+enum ListType
+{
     LITERAL_ELEM,
     SIMBOL_ELEM
+};
+
+enum Sign
+{
+    PLUS,
+    MINUS
 };

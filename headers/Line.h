@@ -11,4 +11,5 @@ public:
     bool m_isInstruction;
     string m_label;
     Line(bool hasLabel, string label, bool isDirective, bool isInstruction);
+    virtual void print();
 };

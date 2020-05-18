@@ -6,8 +6,8 @@
 			"label": "Build project",
 			"command": "/bin/g++",
 			"args": [
-				"-g",
-				"${workspaceFolder}/*/*.cpp",
+				//"-g",
+				"${workspaceFolder}/src/*.cpp",
 				"-o",
 				"${workspaceFolder}/build/main.o"
 			],

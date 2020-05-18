@@ -6,19 +6,27 @@
 #include "../headers/lexer.h"
 
 using namespace std;
+string files []= {"files/prog.s", "files/directive.s"};
 
 int main(int argc, char *argv[])
 {
     bool status = true;
 
-    ifstream file("files/directive.s");
+    ifstream file(files[0]);
     string line;
+    int line_count = 0;
     while (getline(file, line))
     {
+        line_count++;
         line = regex_replace(line, regex("^\\s+"), "");
-        cout << line << endl;
-        if(!match_line(line)){
+        if (line == "")
+            continue;
+        if (!match_line(line))
+        {
             status = false;
+            cout << "Error at line: " << line_count << endl;
+            cout << line << endl
+                 << endl;
             break;
         }
     }

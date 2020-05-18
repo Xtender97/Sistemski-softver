@@ -76,6 +76,7 @@ void Instruction::setOperandSizes(string size)
 
 void Instruction::print()
 {
+    Line::print();
     cout << "Instruction: " << name << endl;
     cout << "Type: ";
     if (type == JUMP)
@@ -115,21 +116,21 @@ void Instruction::print()
 
 //CREATES NEW INSTRUCTION (CALLS CONSTRUCTOR AND SETS OPERAND SIZES)
 
-Instruction *createInstruction(string line)
+Instruction *createInstruction(string line, string label)
 {
     Instruction *instruction;
     regex regex_no_operand(no_operands_instruction);
     smatch match;
     if (regex_match(line, match, regex_no_operand))
     {
-        instruction = new Instruction(match.str(1), "", "", "");
+        instruction = new Instruction(match.str(1), "", "", label);
         instruction->print();
     }
 
     regex regex_single_operand_jump_instruction(single_operand_jump_instruction);
     if (regex_match(line, match, regex_single_operand_jump_instruction))
     {
-        instruction = new Instruction(match.str(1), match.str(2), "", "");
+        instruction = new Instruction(match.str(1), match.str(2), "", label);
         instruction->print();
     }
 
@@ -137,7 +138,7 @@ Instruction *createInstruction(string line)
     if (regex_match(line, match, regex_single_operand_data_instruction))
     {
 
-        instruction = new Instruction(match.str(1), match.str(3), "", "");
+        instruction = new Instruction(match.str(1), match.str(3), "", label);
         instruction->setOperandSizes(match.str(2));
         instruction->print();
     }
@@ -147,7 +148,7 @@ Instruction *createInstruction(string line)
 
     if (regex_match(line, match, regex_double_operand_instruction))
     {
-        instruction = new Instruction(match.str(1), match.str(3), match.str(9), "");
+        instruction = new Instruction(match.str(1), match.str(3), match.str(9), label);
         instruction->setOperandSizes(match.str(2));
         instruction->print();
     }

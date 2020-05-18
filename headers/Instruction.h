@@ -36,4 +36,4 @@ public:
     void print();
 };
 
-Instruction *createInstruction(string instruction);
+Instruction *createInstruction(string instruction, string label);

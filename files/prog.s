@@ -20,3 +20,15 @@ add 54, %r2
 mul %r4, 54(%r3)
 div simbol(%r5), simbol(%r5)
 or $543, 54
+
+.end
+         
+.section text: 
+
+lonelyLabel:
+
+labela: .word 2, 3, simbol
+.global simbol1 , simbol2
+.extern simbol
+.equ simbol, 2+3-4
+.skip 100

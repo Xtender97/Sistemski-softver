@@ -34,9 +34,9 @@ std::string single_operand_data_instruction = "(push|pop)(b|w)?\\s+(" + data_sin
 
 std::string double_operand_instruction = "(xchg|mov|add|sub|mul|div|cmp|not|and|or|xor|test|shl|shr)(b|w)?\\s+(" + data_single_operand + "|" + data_double_operand + "),\\s+(" + data_single_operand + "|" + data_double_operand + ")\\s*";
 
-std::string simbol_list = "(" + simbol + "(,\\s*" + simbol + ")*)";
+std::string simbol_list = "(" + simbol + "(\\s?,\\s*" + simbol + ")*)";
 
-std::string mixed_list = "((" + simbol + "|" + literal + ")(,\\s*" + simbol + "|,\\s*" + literal + ")*)";
+std::string mixed_list = "((" + simbol + "|" + literal + ")(\\s?,\\s*" + simbol + "|\\s?,\\s*" + literal + ")*)";
 
 // .global <lista_simbola>,  .extern <lista_simbola>, .byte <lista_simbola/literala>, .word <lista_simbola/literala>
 std::string list_directive = "(\\.(global|extern)\\s+" + simbol_list + "\\s*)|(\\.(byte|word)\\s+" + mixed_list + ")\\s*";
@@ -47,21 +47,21 @@ std::string end_directive = "\\.(end)\\s*";
 //cout << "END DIRECTIVE: " << end_directive << endl;
 
 // .skip <literal>
-std::string skip_directive = "\\.(skip)\\s+" + literal + "\\s*";
+std::string skip_directive = "\\.(skip)\\s+(" + literal + ")\\s*";
 //cout << "SKIP DIRECTIVE: " << skip_directive << endl;
 
 std::string expression = "(" + simbol + "|" + literal + ")\\s*((\\+|-)\\s?(" + simbol + "|" + literal + ")\\s?)*";
 
 // .equ <simbol>, <izraz>
-std::string equ_directive = "\\.(equ)\\s+" + simbol + ",\\s*" + expression + "\\s*";
+std::string equ_directive = "\\.(equ)\\s+(" + simbol + "),\\s*(" + expression + ")\\s*";
 //cout << "EQU DIRECTIVE: " << equ_directive << endl;
 
 // .section <ime_sekcije>:
-std::string section_directive = "\\.(section)\\s+" + simbol + ":\\s*";
+std::string section_directive = "\\.(section)\\s+(" + simbol + "):\\s*";
 //cout << "SECTION DIRECTIVE: " << section_directive << endl;
 
 // labela:
-std::string lonely_label = simbol + ":\\s*";
+std::string lonely_label = "("+simbol + "):\\s*";
 
 std::string directive = "(" + section_directive + ")|(" + equ_directive + ")|(" + skip_directive + ")|(" + end_directive + ")|(" + list_directive + ")";
 std::string instruction = "(" + no_operands_instruction + ")|(" + single_operand_jump_instruction + ")|(" + single_operand_data_instruction + ")|(" + double_operand_instruction + ")";
