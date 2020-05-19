@@ -122,10 +122,4 @@ bool match_line(string line)
     return false;
 }
 
-// cout << "First capture group: " << match.str(1) << endl;
-// cout << "Second capture group: " << match.str(2) << endl;
-// cout << "Third capture group: " << match.str(3) << endl;
-// cout << "Fourth capture group: " << match.str(4) << endl;
-// cout << "Fifth capture group: " << match.str(5) << endl;
-// cout << "Sixth capture group: " << match.str(6) << endl
-//      << endl;
+

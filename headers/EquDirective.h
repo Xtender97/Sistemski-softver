@@ -1,3 +1,4 @@
+#pragma once
 #include "Directive.h"
 #include <vector>
 #include "Enums.h"

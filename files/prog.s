@@ -32,3 +32,28 @@ labela: .word 2, 3, simbol
 .extern simbol
 .equ simbol, 2+3-4
 .skip 100
+
+
+int *SIMBOL(%pc) 
+int *55(%pc)    
+int *55(%r7)  
+int *55(%r6)
+int *sim(%r6)
+int 55
+int *55  
+call simbol
+jmp *%r4
+jgt *(%r8)
+jgt *(%r7)
+jne $sd
+
+mov %r5, %r3
+add 44, %r5
+sub $simbol, simbol2
+mul simbol, %(r4)
+div $5, %pc
+div $1231, (%pc)
+xchg 123, simbol(%pc)
+xchg 123, 4(%pc)
+xor 5%r5, a(r4)
+xor 5(%r5), a(r4)

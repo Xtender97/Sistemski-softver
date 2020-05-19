@@ -74,3 +74,8 @@ enum Sign
     PLUS,
     MINUS
 };
+
+enum RelocationType{
+    R_386_32,
+    R_386_PC32
+};
