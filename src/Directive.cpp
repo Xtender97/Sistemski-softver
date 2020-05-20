@@ -3,7 +3,7 @@
 
 unordered_map<string, DirectiveType> Directive::DirectiveTypesMap = {
     {"skip", SKIP},
-    {"end", END},
+    {"end", END}, //0
     {"global", GLOBAL},
     {"extern", EXTERN},
     {"section", SECTION},
@@ -24,3 +24,7 @@ void Directive::print(){
     Line::print();
     cout << "Directive type: " << directive_name << endl;
 };
+
+short int Directive::size(){
+    return 0;
+}

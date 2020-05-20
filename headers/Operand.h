@@ -47,4 +47,5 @@ public:
     OperandInfo extractJumpDoubleOperand(string operand);
     OperandInfo extractDataDoubleOperand(string operand);
     void print();
+    short int size();
 };

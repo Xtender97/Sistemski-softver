@@ -14,4 +14,5 @@ public:
     vector<Elem> directive_list;
     ListDirective(string name, string list, string label);
     void print();
+    short int size();
 };

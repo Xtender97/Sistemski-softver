@@ -7,4 +7,6 @@ class RelocationRecord
     int offset;
     RelocationType type;
     Symbol *symbol;
+
+    RelocationRecord( int offset, RelocationType type, Symbol *symbol);
 };

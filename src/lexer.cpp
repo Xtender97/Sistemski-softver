@@ -55,7 +55,7 @@ Directive *createDirective(string line, string label)
     return directive;
 };
 
-bool match_line(string line)
+Line* match_line(string line)
 {
     regex regex_directive(directive);
     regex regex_instruction(instruction);
@@ -70,7 +70,7 @@ bool match_line(string line)
         cout << "Line: " << line << " is directive" << endl
              << endl;
         Directive *directive = createDirective(line, "");
-        return true;
+        return directive;
     }
 
     //INSTRUCTION
@@ -81,7 +81,7 @@ bool match_line(string line)
         cout << "Line: " << line << " is instruction" << endl
              << endl;
         Instruction *instruction = createInstruction(line, "");
-        return true;
+        return instruction;
     }
 
     //LABEL LINE
@@ -104,7 +104,7 @@ bool match_line(string line)
 
 
         
-        return true;
+        return object;
     }
 
     //LONELY LABEL
@@ -116,10 +116,10 @@ bool match_line(string line)
         Line * object = new Line(true, match.str(1), false, false);
         object->print();
         cout << endl;
-        return true;
+        return object;
     }
 
-    return false;
+    return nullptr;
 }
 
 

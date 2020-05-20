@@ -5,6 +5,7 @@
 #include <regex>
 #include "../headers/lexer.h"
 #include "../headers/Assembler.h"
+#include "../headers/SymbolTable.h"
 
 using namespace std;
 
@@ -14,30 +15,47 @@ Assembler::Assembler(string file_path)
     LC = 0;
     currentSection = nullptr;
     file = ifstream(file_path);
-    // symbol_table = new SymbolTable();
+    symbol_table = SymbolTable::getInstance();
     tns = nullptr;
 };
 
 void Assembler::assamble()
 {
     bool status = true;
-    string line;
-    while (getline(file, line))
+    string str_line;
+    while (getline(file, str_line))
     {
         line_number++;
-        line = regex_replace(line, regex("^\\s+"), "");
-        if (line == "")
+        str_line = regex_replace(str_line, regex("^\\s+"), "");
+        if (str_line == "")
+        {
             continue;
-        if (!match_line(line))
+        }
+
+        Line * line =match_line(str_line);
+
+        if (line == nullptr)
         {
             status = false;
             cout << "Error at line: " << line_number << endl;
-            cout << line << endl
+            cout << str_line << endl
                  << endl;
             break;
         }
+        else
+        {
+            if(line->hasLabel){
+                Symbol* symbol = new Symbol(line->label, /*currentSection->serialNumber*/ 0, true, LC, 'l');
+                symbol_table->addSymbol(symbol);
+            }
+
+            
+
+            LC += line->size();
+        }
     }
 
-    cout << "Exited with status " << status << endl;
+    symbol_table->print();
 
+    cout << "Exited with status " << status << endl;
 }

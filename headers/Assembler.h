@@ -14,13 +14,13 @@ class Assembler
 {
 public:
     int line_number;
-    int LC;
+    short int LC;
     ifstream file;
     SymbolTable* symbol_table;
     TNS* tns;
 
 
-    Section *currentSection;
+    static Section *currentSection;
 
     Assembler(string file_path);
 

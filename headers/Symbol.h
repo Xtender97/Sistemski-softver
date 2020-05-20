@@ -4,9 +4,9 @@
 
 using namespace std;
 
-class Symbol{
+class Symbol
+{
 public:
-
     string name;
     int section;
     bool isDefined;
@@ -15,8 +15,15 @@ public:
     char scope;
     vector<int> forwardList;
 
-    Symbol(string n, int section_serail, bool definition, int val, char global_or_local);
+    Symbol(string name, int section_serial, bool isDefinition, int val, char scope, int serialNumber);
 
+    Symbol(string name, int section_serial, bool isDefinition, int val, char scope);
+    
     void backPatch();
-};
 
+    void addToForwardList(int offset);
+
+    void print();
+
+    void setSerialNumber(int serial);
+};

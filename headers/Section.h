@@ -6,9 +6,16 @@
 
 class Section : public Symbol
 {
+public:
     int size;
     SectionContent *content;
     RelocationTable *relocationTable;
 
-    Section(string n, int section_serail, bool definition, int val, char global_or_local);
+    Section(string n, int section_serail, bool definition, int val, char global_or_local, int serialNumber);
+
+    void addContent();
+
+    void addRelocation();
+
+    void setSize(int size);
 };

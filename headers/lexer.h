@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <regex>
-
+#include "Line.h"
 using namespace std;
 
-bool match_line(string line);
+Line* match_line(string line);

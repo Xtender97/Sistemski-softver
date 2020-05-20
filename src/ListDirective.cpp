@@ -56,3 +56,15 @@ void ListDirective::print()
 
     cout << endl;
 };
+
+short int ListDirective::size(){
+    int multiplier = 0;
+    if( type == WORD_DIRECTIVE){
+        multiplier = 2;
+    };
+    if( type == BYTE_DIRECTIVE){
+        multiplier = 1;
+    };
+
+    return directive_list.size()*multiplier;
+}

@@ -6,10 +6,11 @@ using namespace std;
 class Line
 {
 public:
-    bool m_hasLabel;
-    bool m_isDirective;
-    bool m_isInstruction;
-    string m_label;
+    bool hasLabel;
+    bool isDirective;
+    bool isInstruction;
+    string label;
     Line(bool hasLabel, string label, bool isDirective, bool isInstruction);
     virtual void print();
+    virtual short int size();
 };

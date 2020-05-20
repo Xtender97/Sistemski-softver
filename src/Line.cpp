@@ -2,16 +2,19 @@
 
 Line::Line(bool hasLabel, string label, bool isDirective, bool isInstruction)
 {
-    m_hasLabel = hasLabel;
-    m_label = label;
-    m_isDirective = isDirective;
-    m_isInstruction = isInstruction;
+    this->hasLabel = hasLabel;
+    this->label = label;
+    this->isDirective = isDirective;
+    this->isInstruction = isInstruction;
 };
 
 void Line::print()
 {
-    if (m_hasLabel)
+    if (hasLabel)
     {
-        cout << "Label: " << m_label << endl;
+        cout << "Label: " << label << endl;
     };
 }
+ short int Line::size(){
+     return 0;
+ }

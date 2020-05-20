@@ -4,9 +4,11 @@
 class SkipDirective : public Directive
 {
 public:
-    int numberOfBytes;
+    short int numberOfBytes;
 
     SkipDirective(string name, int skipSize, string label);
 
     void print();
+
+    short int size();
 };

@@ -10,3 +10,7 @@ void SkipDirective::print(){
     Directive::print();
     cout << "Number of bytes: " << numberOfBytes << endl << endl;
 }
+
+short int SkipDirective::size(){
+    return numberOfBytes;
+}

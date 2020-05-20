@@ -34,6 +34,8 @@ public:
     void setOperandSizes(string size);
 
     void print();
+
+    short int size();
 };
 
 Instruction *createInstruction(string instruction, string label);

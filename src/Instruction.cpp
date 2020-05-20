@@ -155,3 +155,19 @@ Instruction *createInstruction(string line, string label)
 
     return instruction;
 };
+
+short int Instruction::size(){
+     short int size = 1;
+     if(numberOfOperands == 0){
+         return size;
+     }
+     if(numberOfOperands >= 1) {
+         size += operandOne.size();
+
+     }
+     if(numberOfOperands == 2){
+         size += operandTwo.size();
+     }
+
+     return size;
+ }

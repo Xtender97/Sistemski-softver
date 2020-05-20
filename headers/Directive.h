@@ -12,4 +12,5 @@ public:
     string directive_name;
     Directive(string name, string label);
     virtual void print();
+    virtual short int size();
 };

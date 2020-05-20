@@ -273,7 +273,7 @@ OperandInfo Operand::extractDataDoubleOperand(string operand)
     }
 
     // WITH LITERAL
-    
+
     regex regex_literal_register("(" + literal + ")\\(%(r[0-6])\\)");
     if (regex_match(operand, match, regex_literal_register))
     {
@@ -298,3 +298,33 @@ void Operand::print()
     cout << "\tSimbol: " << op_simbol << endl;
     cout << "\tLiteral: " << op_literal << endl;
 }
+
+short int Operand::size()
+{
+
+    if (adressing == REGISTER_DIRECT || adressing == REGISTER_INDIRECT)
+    {
+        return 1;
+    }
+    if (adressing == REGISTER_INDIRECT_WITH_OFFSET || adressing == MEMORY)
+    {
+        return 3;
+    }
+
+    if(adressing == IMMEDIATE ){
+        if(type == SIMBOL){// simbol predstavlja adresu mora da bude 16bita
+            return 3;
+        }
+        if(type == LITERAL){
+            if(stoi(op_literal) <= 255){ // literal staje u 1 bajt
+                return 2;
+            }
+            else {
+                return 3;// trebaju 2 bajta
+            }
+        }
+    }
+    
+    return 0; // greska
+  
+};
