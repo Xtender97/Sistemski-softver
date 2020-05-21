@@ -1,12 +1,19 @@
 #pragma once
 #include "Enums.h"
 #include "Symbol.h"
+#include <vector>
 
 class RelocationRecord
 {
-    int offset;
+
+
+public:
+    static vector<string> RelocationTypeMap;
+    short int offset;
     RelocationType type;
     Symbol *symbol;
 
-    RelocationRecord( int offset, RelocationType type, Symbol *symbol);
+    RelocationRecord(short int offset, RelocationType type, Symbol *symbol);
+
+    void print();
 };

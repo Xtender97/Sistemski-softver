@@ -13,9 +13,14 @@ public:
 
     Section(string n, int section_serail, bool definition, int val, char global_or_local, int serialNumber);
 
-    void addContent();
+    Section(string name);
 
-    void addRelocation();
+
+    void addContent(unsigned char * content, int size);
+
+    void addRelocation(RelocationRecord * relocation);
 
     void setSize(int size);
+
+    void setSerialNumber(int serial);
 };

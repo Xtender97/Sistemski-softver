@@ -18,3 +18,7 @@ void Line::print()
  short int Line::size(){
      return 0;
  }
+
+ void Line::assamble(){
+     cout << "ass" << endl;
+ };

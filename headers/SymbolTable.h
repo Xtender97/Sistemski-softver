@@ -10,10 +10,9 @@ private:
     static SymbolTable *instance;
 
     SymbolTable(const SymbolTable &c);
-    SymbolTable &operator=(const SymbolTable &c); 
+    SymbolTable &operator=(const SymbolTable &c);
 
 public:
-
     int max_serial;
 
     static SymbolTable *getInstance();
@@ -22,12 +21,17 @@ public:
 
     void backPatch(); // not implemented
 
-    void addSymbol(Symbol* symbol);
+    void addSymbol(Symbol *symbol);
 
     bool symbolExists(string symbol_name);
 
-    void sort();// not implemented
+    Symbol * getSymbol(string symbol_name);
+
+    void sort(); // not implemented
 
     void print();
 
+    void printAllSectionContents();
+
+    void printAllRelocationTables();
 };

@@ -3,18 +3,20 @@
 #include <string>
 #include <vector>
 
+using namespace std;
+
 class SectionContent
 {
 
 public:
     string sectionName;
-    vector <char> content;
+    vector <unsigned char> content;
 
     SectionContent(string name);
 
-    void append();
+    void append(unsigned char * content, int size);
 
-    void replace(int index, int size);
+    void replace(int index, int size, unsigned char * content);
 
     void print();
 

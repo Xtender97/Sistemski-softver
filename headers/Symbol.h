@@ -25,5 +25,5 @@ public:
 
     void print();
 
-    void setSerialNumber(int serial);
+    void virtual setSerialNumber(int serial);
 };

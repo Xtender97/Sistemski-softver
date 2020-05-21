@@ -6,14 +6,19 @@
 #include "../headers/lexer.h"
 #include "../headers/Assembler.h"
 #include "../headers/SymbolTable.h"
+#include "../headers/SectionDirective.h"
+#include "../headers/Section.h"
 
 using namespace std;
+
+Section *  Assembler::currentSection = nullptr;
+short int Assembler::LC = 0;
 
 Assembler::Assembler(string file_path)
 {
     line_number = 0;
     LC = 0;
-    currentSection = nullptr;
+    //currentSection = nullptr;
     file = ifstream(file_path);
     symbol_table = SymbolTable::getInstance();
     tns = nullptr;
@@ -32,7 +37,7 @@ void Assembler::assamble()
             continue;
         }
 
-        Line * line =match_line(str_line);
+        Line *line = match_line(str_line);
 
         if (line == nullptr)
         {
@@ -44,18 +49,24 @@ void Assembler::assamble()
         }
         else
         {
-            if(line->hasLabel){
-                Symbol* symbol = new Symbol(line->label, /*currentSection->serialNumber*/ 0, true, LC, 'l');
+            if (line->hasLabel)
+            {
+                Symbol *symbol = new Symbol(line->label, /*currentSection->serialNumber*/ 0, true, LC, 'l');
                 symbol_table->addSymbol(symbol);
             }
 
-            
+            // if (SectionDirective *section = dynamic_cast<SectionDirective *>(line))
+            // {
 
+            // }
+            line->assamble();
+            cout << "Trenutna sekcija: "<< currentSection->name << endl;
             LC += line->size();
         }
     }
 
     symbol_table->print();
+    symbol_table->printAllSectionContents();
 
     cout << "Exited with status " << status << endl;
 }

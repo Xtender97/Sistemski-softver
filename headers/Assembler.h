@@ -14,7 +14,7 @@ class Assembler
 {
 public:
     int line_number;
-    short int LC;
+    static short int LC;
     ifstream file;
     SymbolTable* symbol_table;
     TNS* tns;

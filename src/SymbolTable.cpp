@@ -40,6 +40,16 @@ bool SymbolTable::symbolExists(string symbol_name)
     }
 }
 
+Symbol *SymbolTable::getSymbol(string symbol_name)
+{
+    if (symbolExists(symbol_name))
+    {
+        return symbolTable[symbol_name];
+    }
+    else
+        return nullptr;
+};
+
 void SymbolTable::print()
 {
     printElement("Name", 25);
@@ -49,10 +59,19 @@ void SymbolTable::print()
     printElement("Scope", 10);
     printElement("SerialNumber", 20);
     printElement("ForwardList", 20);
-    cout<< endl;
+    cout << endl;
     for (auto elem : symbolTable)
     {
         elem.second->print();
     }
     cout << endl;
 }
+
+void SymbolTable::printAllSectionContents(){
+    for (auto elem : symbolTable)
+    {
+        if(elem.second->serialNumber == elem.second->section){
+           ((Section*)elem.second)->content->print();
+        }
+    }
+};

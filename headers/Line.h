@@ -13,4 +13,5 @@ public:
     Line(bool hasLabel, string label, bool isDirective, bool isInstruction);
     virtual void print();
     virtual short int size();
+    virtual void assamble();
 };

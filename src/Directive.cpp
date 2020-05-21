@@ -28,3 +28,8 @@ void Directive::print(){
 short int Directive::size(){
     return 0;
 }
+void Directive::assamble(){
+    if(directive_name == "end"){
+        cout << "STOP" << endl;
+    }
+}

@@ -15,4 +15,5 @@ public:
     ListDirective(string name, string list, string label);
     void print();
     short int size();
+    void assamble();
 };

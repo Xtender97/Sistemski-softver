@@ -13,4 +13,5 @@ public:
     Directive(string name, string label);
     virtual void print();
     virtual short int size();
+    virtual void assamble();// treba implementirati za .end directivu
 };

@@ -4,6 +4,9 @@
 #include "../headers/regex.h"
 #include <regex>
 #include "../headers/Enums.h"
+#include "../headers/Assembler.h"
+#include "../headers/Section.h"
+#include "../headers/SymbolTable.h"
 
 using namespace std;
 
@@ -51,20 +54,69 @@ void ListDirective::print()
     for (auto elem : directive_list)
     {
         i++;
-        cout << "Element " << i << ". : " << elem.value << " of type " << (elem.type? "SIMBOL":"LITERAL") << endl;
+        cout << "Element " << i << ". : " << elem.value << " of type " << (elem.type ? "SIMBOL" : "LITERAL") << endl;
     };
 
     cout << endl;
 };
 
-short int ListDirective::size(){
+short int ListDirective::size()
+{
     int multiplier = 0;
-    if( type == WORD_DIRECTIVE){
+    if (type == WORD_DIRECTIVE)
+    {
         multiplier = 2;
     };
-    if( type == BYTE_DIRECTIVE){
+    if (type == BYTE_DIRECTIVE)
+    {
         multiplier = 1;
     };
 
-    return directive_list.size()*multiplier;
+    return directive_list.size() * multiplier;
+}
+
+void ListDirective::assamble()
+{
+    short int offset = Assembler::LC;
+    Section *currentSection = Assembler::currentSection;
+    if (type == WORD_DIRECTIVE || type == BYTE_DIRECTIVE)
+    {
+        int size = type == WORD_DIRECTIVE ? 2 :1;
+        for (auto elem : directive_list)
+        {
+            short int value = 0;
+            if (elem.type == SIMBOL_ELEM)
+            {
+                Symbol *symbol = SymbolTable::getInstance()->getSymbol(elem.value);
+                if (symbol != nullptr) //exists in table
+                {
+                    if (symbol->isDefined)
+                    { //defined symbol
+                        value = symbol->value;
+                    }
+                    else
+                    { //not defined symbol
+
+                        ///////////////////////////////////////////////
+                        //   CREATE REALOCATION and set value to 0   //
+                        ///////////////////////////////////////////////
+                        value = 0;
+                    }
+                }
+                else //doesnt existi in table
+                {
+                }
+            }
+            else
+            {//LITERAL
+                value = stoi(elem.value);
+                unsigned char bytes[size];                     
+                for (int i = 0; i < size; i++)
+                    bytes[size-1 - i] = (value >> (i * 8));
+
+                currentSection->addContent(bytes, size);
+            }
+            offset +=size;
+        }
+    }
 }

@@ -5,11 +5,11 @@ class RelocationTable
 {
 public:
     string sectionName;
-    vector<RelocationRecord> table;
+    vector<RelocationRecord*> table;
 
     RelocationTable(string name);
 
     void print();
 
-    void addRelocation();
+    void addRelocation(RelocationRecord * relocation);
 };
