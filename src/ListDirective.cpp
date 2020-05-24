@@ -81,7 +81,7 @@ void ListDirective::assamble()
     Section *currentSection = Assembler::currentSection;
     if (type == WORD_DIRECTIVE || type == BYTE_DIRECTIVE)
     {
-        int size = type == WORD_DIRECTIVE ? 2 :1;
+        int size = type == WORD_DIRECTIVE ? 2 : 1;
         for (auto elem : directive_list)
         {
             short int value = 0;
@@ -105,18 +105,25 @@ void ListDirective::assamble()
                 }
                 else //doesnt existi in table
                 {
+                    ///////////////////////////////////////////////
+                    //   CREATE REALOCATION and set value to 0   //
+                    ///////////////////////////////////////////////
+                    value = 0;
                 }
             }
             else
-            {//LITERAL
+            { //LITERAL
                 value = stoi(elem.value);
-                unsigned char bytes[size];                     
-                for (int i = 0; i < size; i++)
-                    bytes[size-1 - i] = (value >> (i * 8));
-
-                currentSection->addContent(bytes, size);
+                if(value > 255){
+                    throw "Operand of byte directive bigger then 255!";
+                }
             }
-            offset +=size;
+            unsigned char bytes[size];
+            for (int i = 0; i < size; i++)
+                bytes[size - 1 - i] = (value >> (i * 8));
+
+            currentSection->addContent(bytes, size);
+            offset += size;
         }
     }
 }
