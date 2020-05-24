@@ -11,7 +11,7 @@ public:
     SectionContent *content;
     RelocationTable *relocationTable;
 
-    Section(string n, int section_serail, bool definition, int val, char global_or_local, int serialNumber);
+    Section(string n, bool definition, int val, char global_or_local, int serialNumber);
 
     Section(string name);
 

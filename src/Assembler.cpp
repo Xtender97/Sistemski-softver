@@ -13,6 +13,7 @@ using namespace std;
 
 Section *Assembler::currentSection = nullptr;
 short int Assembler::LC = 0;
+bool Assembler::run = true;
 
 Assembler::Assembler(string file_path)
 {
@@ -22,6 +23,7 @@ Assembler::Assembler(string file_path)
     file = ifstream(file_path);
     symbol_table = SymbolTable::getInstance();
     tns = nullptr;
+    run = true;
 };
 
 void Assembler::assamble()
@@ -30,7 +32,7 @@ void Assembler::assamble()
     string str_line;
     try
     {
-        while (getline(file, str_line))
+        while (getline(file, str_line) && run)
         {
             line_number++;
             str_line = regex_replace(str_line, regex("^\\s+"), "");
@@ -53,16 +55,27 @@ void Assembler::assamble()
             {
                 if (line->hasLabel)
                 {
-                    Symbol *symbol = new Symbol(line->label, currentSection->serialNumber, true, LC, 'l');
-                    symbol_table->addSymbol(symbol);
+                    Symbol *tableSymbol = SymbolTable::getInstance()->getSymbol(line->label);
+                    if (tableSymbol == nullptr)
+                    {
+                        Symbol *symbol = new Symbol(line->label, currentSection, true, LC, 'l');
+                        symbol_table->addSymbol(symbol);
+                    }
+                    else
+                    {
+                        if (tableSymbol->isDefined)
+                        {
+                            throw "Multiple definition of symbol: " + tableSymbol->name;
+                        }
+                        else
+                        {
+                            tableSymbol->isDefined = true;
+                            tableSymbol->section = currentSection;
+                            tableSymbol->value = LC;
+                        }
+                    }
                 }
-
-                // if (SectionDirective *section = dynamic_cast<SectionDirective *>(line))
-                // {
-
-                // }
                 line->assamble();
-                cout << "Trenutna sekcija: " << currentSection->name << endl;
                 LC += line->size();
             }
         }
@@ -74,7 +87,11 @@ void Assembler::assamble()
     }
     catch (const char *msg)
     {
-        cerr<< "Error at line " << line_number << ":" <<endl;
+        cerr << "Error at line " << line_number << ":" << endl;
         cerr << msg << endl;
+    }
+    catch (string error){
+        cerr << "Error at line " << line_number << ":" << endl;
+        cerr << error << endl;
     }
 }

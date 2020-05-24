@@ -1,5 +1,6 @@
 #include "../headers/Directive.h"
 #include "../headers/Line.h"
+#include "../headers/Assembler.h"
 
 unordered_map<string, DirectiveType> Directive::DirectiveTypesMap = {
     {"skip", SKIP},
@@ -30,6 +31,6 @@ short int Directive::size(){
 }
 void Directive::assamble(){
     if(directive_name == "end"){
-        cout << "STOP" << endl;
+        Assembler::run = false;
     }
 }

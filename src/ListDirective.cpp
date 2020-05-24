@@ -114,7 +114,8 @@ void ListDirective::assamble()
             else
             { //LITERAL
                 value = stoi(elem.value);
-                if(value > 255){
+                if (value > 255)
+                {
                     throw "Operand of byte directive bigger then 255!";
                 }
             }
@@ -124,6 +125,40 @@ void ListDirective::assamble()
 
             currentSection->addContent(bytes, size);
             offset += size;
+        }
+    }
+
+    if (type == GLOBAL)
+    {
+        if (currentSection != nullptr)
+        {
+            throw "Global directive cant be inside section!";
+        }
+        else
+        {
+            for (auto elem : directive_list)
+            { // always symbol regex
+                string symbol_name = elem.value;
+                Symbol *symbol = new Symbol(symbol_name, nullptr, false, 0, 'g');
+                SymbolTable::getInstance()->addSymbol(symbol);
+            }
+        }
+    }
+    if (type == EXTERN)
+    {
+        if (currentSection != nullptr)
+        {
+            throw "Extern directive cant be inside section!";
+        }
+        else
+        {
+            Section *undSection = (Section *)SymbolTable::getInstance()->getSymbol("und");
+            for (auto elem : directive_list)
+            { // always symbol regex
+                string symbol_name = elem.value;
+                Symbol *symbol = new Symbol(symbol_name, undSection, false, 0, 'g');
+                SymbolTable::getInstance()->addSymbol(symbol);
+            }
         }
     }
 }

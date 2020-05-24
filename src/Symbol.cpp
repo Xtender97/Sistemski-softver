@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Symbol::Symbol(string name, int section_serial, bool isDefinition, int val, char scope, int serialNumber)
+Symbol::Symbol(string name, Symbol *section_serial, bool isDefinition, int val, char scope, int serialNumber)
 {
     this->name = name;
     section = section_serial;
@@ -17,7 +17,7 @@ Symbol::Symbol(string name, int section_serial, bool isDefinition, int val, char
     this->serialNumber = serialNumber;
 }
 
-Symbol::Symbol(string name, int section_serial, bool isDefinition, int val, char scope)
+Symbol::Symbol(string name, Symbol *section_serial, bool isDefinition, int val, char scope)
 {
     this->name = name;
     section = section_serial;
@@ -38,7 +38,15 @@ void Symbol::print()
 {
 
     printElement(name, 25);
-    printElement(section, 10);
+    if (section)
+    {
+        printElement(section->serialNumber, 10);
+    }
+    else
+    {
+        printElement("nullptr", 10);
+    }
+
     printElement(isDefined, 10);
     printElement(value, 16);
     printElement(scope, 10);

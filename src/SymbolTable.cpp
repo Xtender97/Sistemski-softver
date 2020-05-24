@@ -7,7 +7,7 @@
 SymbolTable::SymbolTable()
 {
     max_serial = 0;
-    symbolTable["und"] = new Section("und", 0, true, 0, 'l', max_serial);
+    symbolTable["und"] = new Section("und", true, 0, 'l', max_serial);
     max_serial++;
 }
 
@@ -24,6 +24,9 @@ SymbolTable *SymbolTable::getInstance()
 
 void SymbolTable::addSymbol(Symbol *symbol)
 {
+    // if(symbolExists(symbol->name)){
+    //     throw "Multiple definition of symbol: " + symbol->name;
+    // }
     symbol->setSerialNumber(max_serial++);
     symbolTable[symbol->name] = symbol;
 }
@@ -67,11 +70,19 @@ void SymbolTable::print()
     cout << endl;
 }
 
-void SymbolTable::printAllSectionContents(){
+void SymbolTable::printAllSectionContents()
+{
     for (auto elem : symbolTable)
     {
-        if(elem.second->serialNumber == elem.second->section){
-           ((Section*)elem.second)->content->print();
+
+        if (dynamic_cast<Section *>(elem.second))
+        {
+            if (elem.second->name != ".und")
+            {
+                ((Section *)elem.second)->content->print();
+
+                cout << endl;
+            }
         }
     }
 };
