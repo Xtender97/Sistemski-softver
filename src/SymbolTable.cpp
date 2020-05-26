@@ -80,9 +80,14 @@ void SymbolTable::printAllSectionContents()
             if (elem.second->name != ".und")
             {
                 ((Section *)elem.second)->content->print();
+                cout << endl;
+                ((Section *)elem.second)->relocationTable->print();
+
 
                 cout << endl;
             }
         }
     }
 };
+
+

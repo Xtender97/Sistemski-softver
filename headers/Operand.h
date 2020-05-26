@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <unordered_map>
+#include <vector>
 #include "Enums.h"
 
 using namespace std;
@@ -23,6 +24,9 @@ private:
     static string addressingType[];
     static string operandType[];
     static string registerPartType[];
+    static unordered_map<string, unsigned char> RegisterMap;
+    static unordered_map<AddressingType, unsigned char> AddressingMap;
+
 
 public:
     string stringOperand;
@@ -48,4 +52,5 @@ public:
     OperandInfo extractDataDoubleOperand(string operand);
     void print();
     short int size();
+    vector<unsigned char> operandValue(int offsetFromBeginningOfInstruction);
 };

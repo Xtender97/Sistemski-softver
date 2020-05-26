@@ -1,5 +1,6 @@
 #pragma once
 #include "Directive.h"
+#include "Assembler.h"
 
 class SkipDirective : public Directive
 {
@@ -11,4 +12,6 @@ public:
     void print();
 
     short int size();
+
+    void assamble();
 };

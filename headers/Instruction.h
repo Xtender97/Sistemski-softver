@@ -14,7 +14,6 @@ class Instruction : public Line
 {
 private:
     static unordered_map<string, InstructionInfo> InstructionMap;
-    static unordered_map<string, int> RegisterMap;
    
 
 
@@ -36,6 +35,8 @@ public:
     void print();
 
     short int size();
+
+    void assamble();
 };
 
 Instruction *createInstruction(string instruction, string label);

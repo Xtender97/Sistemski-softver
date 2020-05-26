@@ -13,6 +13,7 @@ void RelocationTable::addRelocation(RelocationRecord *relocation)
 
 void RelocationTable::print()
 {
+    cout<< "Relocation table for section: " + sectionName << endl;
     for (auto elem : table)
     {
         elem->print();

@@ -1,6 +1,7 @@
 #include "../headers/Operand.h"
 #include <regex>
 #include "../headers/regex.h"
+#include "../headers/Assembler.h"
 
 string Operand::addressingType[] = {
     "IMMEDIATE",
@@ -25,6 +26,28 @@ string Operand::registerPartType[] =
         "WHOLE",
         "NOT_REGISTER",
         "ERROR"};
+
+unordered_map<string, unsigned char> Operand::RegisterMap = {
+    {"r0", 0x00},
+    {"r1", 0x01},
+    {"r2", 0x02},
+    {"r3", 0x03},
+    {"r4", 0x04},
+    {"r5", 0x05},
+    {"r6", 0x06},
+    {"r7", 0x07},
+    {"pc", 0x07},
+    {"psw", 0x0f}};
+
+unordered_map<AddressingType, unsigned char> Operand::AddressingMap{
+
+    {IMMEDIATE, 0x00},
+    {REGISTER_DIRECT, 0x01},
+    {REGISTER_INDIRECT, 0x02},
+    {REGISTER_INDIRECT_WITH_OFFSET, 0x03},
+    {MEMORY, 0x04}
+
+};
 
 Operand::Operand()
 {
@@ -311,20 +334,112 @@ short int Operand::size()
         return 3;
     }
 
-    if(adressing == IMMEDIATE ){
-        if(type == SIMBOL){// simbol predstavlja adresu mora da bude 16bita
+    if (adressing == IMMEDIATE)
+    {
+        if (type == SIMBOL)
+        { // simbol predstavlja adresu mora da bude 16bita
             return 3;
         }
-        if(type == LITERAL){
-            if(stoi(op_literal) <= 255){ // literal staje u 1 bajt
+        if (type == LITERAL)
+        {
+            if (stoi(op_literal) <= 255)
+            { // literal staje u 1 bajt
                 return 2;
             }
-            else {
-                return 3;// trebaju 2 bajta
+            else
+            {
+                return 3; // trebaju 2 bajta
             }
         }
     }
-    
+
     return 0; // greska
-  
+};
+
+vector<unsigned char> Operand::operandValue(int offsetFromBeginningOfInstruction)
+{
+    vector<unsigned char> opCode;
+    unsigned char OpDescr = 0x00;
+    OpDescr |= (AddressingMap[adressing] << 5);
+    if (adressing != IMMEDIATE && adressing != MEMORY)
+    {
+        OpDescr |= (RegisterMap[op_reg] << 1);
+    }
+    if (registerPart == HIGH)
+    {
+        OpDescr |= 0x01;
+    }
+    opCode.push_back(OpDescr); //vrv ce da pukne ovde
+
+    short int offset = Assembler::LC;
+    offset += offsetFromBeginningOfInstruction;
+    short int value = 0;
+    Section *currentSection = Assembler::currentSection;
+    int size = 0;
+    if (type == SIMBOL || type == SIMBOL_REGISTER)
+    {
+        size = 2;
+        Symbol *symbol = SymbolTable::getInstance()->getSymbol(op_simbol);
+        if (symbol != nullptr) //exists in table
+        {
+            if (symbol->isDefined)
+            { //defined symbol
+                value = symbol->value;
+            }
+            else
+            { //not defined symbol
+                symbol->addToForwardList(offset);
+                value = 0;
+            }
+        }
+        else //doesnt existi in table
+        {
+            symbol = new Symbol(op_simbol, currentSection, false, 0, 'l');
+            SymbolTable::getInstance()->addSymbol(symbol);
+            symbol->addToForwardList(offset);
+
+            value = 0;
+        }
+
+        RelocationRecord *relocation;
+        if (symbol->scope == 'g')
+        {
+            relocation = new RelocationRecord(offset, R_386_32, symbol);
+        }
+        else
+        { //global symbol, reference section
+            relocation = new RelocationRecord(offset, R_386_32, currentSection);
+        }
+        currentSection->addRelocation(relocation);
+    }
+    if (type == LITERAL_REGISTER || type == LITERAL)
+    {
+        cout << "U LITERAL DELU IFAAAAAAA" << endl;
+        value = stoi(op_literal);
+        // cout << "VREDNOST LITERALA JE ********************************" + value << endl;
+        if (adressing == IMMEDIATE)
+        {
+            if (value < 256)
+            {
+                size = 1;
+            }
+            else
+            {
+                size = 2;
+            }
+        }
+        else
+        {
+            size = 2;
+        }
+        cout << "U LITERAL DELU IFAAAAAAA" << endl;
+    }
+
+    for (int i = size - 1; i >= 0; i--)
+    {
+        opCode.push_back(value >> (i * 8));
+        cout << "operand" << endl;
+    }
+    return opCode;
+    //currentSection->addContent(bytes, size);
 };

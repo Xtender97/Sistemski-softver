@@ -48,7 +48,11 @@ void Symbol::print()
     }
 
     printElement(isDefined, 10);
-    printElement(value, 16);
+    if(isDefined)
+    {printElement(value, 16);
+    }else{
+        printElement(-1, 16);
+    }
     printElement(scope, 10);
     printElement(serialNumber, 20);
 

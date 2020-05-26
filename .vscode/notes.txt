@@ -1,1 +1,4 @@
 size of operand when set implicid need to be checked and set size of operands and instruction accordingly
+dst immediate need to be forbiden
+backPatch
+equ

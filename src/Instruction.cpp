@@ -1,6 +1,8 @@
 #include "../headers/Instruction.h"
 #include <regex>
 #include "../headers/regex.h"
+#include "../headers/print.h"
+#include "../headers/Assembler.h"
 
 //MAP OF INSTRUCTIONS WITH MNEMONIC, OP CODE, TYPE OF INSTRUCTION AMD NUMBER OF OPERANDS
 
@@ -30,17 +32,6 @@ unordered_map<string, InstructionInfo> Instruction::InstructionMap = {
     {"test", {22, DATA, 2}},
     {"shl", {23, DATA, 2}},
     {"shr", {24, DATA, 2}}};
-unordered_map<string, int> Instruction::RegisterMap = {
-    {"r0", 0x0},
-    {"r1", 0x1},
-    {"r2", 0x2},
-    {"r3", 0x3},
-    {"r4", 0x4},
-    {"r5", 0x5},
-    {"r6", 0x6},
-    {"r7", 0x7},
-    {"pc", 0x7},
-    {"psw", 0xf}};
 
 //CONSTRUCTOR
 
@@ -156,18 +147,72 @@ Instruction *createInstruction(string line, string label)
     return instruction;
 };
 
-short int Instruction::size(){
-     short int size = 1;
-     if(numberOfOperands == 0){
-         return size;
-     }
-     if(numberOfOperands >= 1) {
-         size += operandOne.size();
+short int Instruction::size()
+{
+    short int size = 1;
+    if (numberOfOperands == 0)
+    {
+        return size;
+    }
+    if (numberOfOperands >= 1)
+    {
+        size += operandOne.size();
+    }
+    if (numberOfOperands == 2)
+    {
+        size += operandTwo.size();
+    }
 
-     }
-     if(numberOfOperands == 2){
-         size += operandTwo.size();
-     }
+    return size;
+}
 
-     return size;
- }
+void Instruction::assamble()
+{
+
+    unsigned char InstrDescr = (unsigned char)opCode;
+    InstrDescr = InstrDescr << 3;
+    if (sizeOfOperands != BYTE)
+    {
+        InstrDescr |= 0x04;
+    }
+    else
+    {
+        InstrDescr &= 0xfb;
+    }
+    InstrDescr &= 0xfc;
+    // cout << "after bit operations";
+    // cout << hex << right << setfill('0') << setw(2) << (int)InstrDescr << " ";
+    vector<unsigned char> op1;
+    vector<unsigned char> op2;
+    if (numberOfOperands ==1)
+    {
+
+        op1 = operandOne.operandValue(0);// because little endian
+    }
+    if (numberOfOperands == 2)
+    {
+        op1 = operandOne.operandValue(operandTwo.size());
+        op2 = operandTwo.operandValue(0);
+    }
+
+    vector<unsigned char> instructionOpCode;
+    instructionOpCode.push_back(InstrDescr);
+    cout << 1 << endl;
+    instructionOpCode.insert(instructionOpCode.end(), op1.begin(), op1.end());
+    if (numberOfOperands == 2)
+    {
+        instructionOpCode.insert(instructionOpCode.end(), op2.begin(), op2.end());
+        cout << 2 << endl;
+    }
+
+    int i = 0;
+    int instructionSize = size();
+    unsigned char bytes[instructionSize];
+    for (auto elem : instructionOpCode)
+    {
+        bytes[i++] = elem;
+        cout << i << " " << endl;
+    }
+    cout << instructionSize << " velicina " << endl;
+    Assembler::currentSection->addContent(bytes, instructionSize);
+}

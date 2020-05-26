@@ -98,8 +98,10 @@ void ListDirective::assamble()
                     { //not defined symbol
 
                         ///////////////////////////////////////////////
-                        //   CREATE REALOCATION and set value to 0   //
+                        //   CREATE forward link                     //
                         ///////////////////////////////////////////////
+
+                        symbol->addToForwardList(offset);
                         value = 0;
                     }
                 }
@@ -108,8 +110,22 @@ void ListDirective::assamble()
                     ///////////////////////////////////////////////
                     //   CREATE REALOCATION and set value to 0   //
                     ///////////////////////////////////////////////
+                    symbol = new Symbol(elem.value, currentSection, false, 0, 'l');
+                    SymbolTable::getInstance()->addSymbol(symbol);
+                    symbol->addToForwardList(offset);
+
                     value = 0;
                 }
+                RelocationRecord *relocation;
+                if (symbol->scope == 'g')
+                {
+                    relocation = new RelocationRecord(offset, R_386_32, symbol);
+                }
+                else
+                { //global symbol reference section
+                    relocation = new RelocationRecord(offset, R_386_32, currentSection);
+                }
+                currentSection->addRelocation(relocation);
             }
             else
             { //LITERAL
@@ -121,7 +137,9 @@ void ListDirective::assamble()
             }
             unsigned char bytes[size];
             for (int i = 0; i < size; i++)
+            {
                 bytes[size - 1 - i] = (value >> (i * 8));
+            }
 
             currentSection->addContent(bytes, size);
             offset += size;
