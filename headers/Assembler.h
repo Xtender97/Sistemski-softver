@@ -18,7 +18,7 @@ public:
     static bool run;
     ifstream file;
     SymbolTable* symbol_table;
-    TNS* tns;
+    static TNS* tns;
 
 
     static Section *currentSection;

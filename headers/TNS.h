@@ -3,10 +3,11 @@
 #include "TNSRow.h"
 
 class TNS{
-
+public:
     vector<TNSRow*> tns;
 
     TNS();
-    bool isEmtry();
+    void add(TNSRow* row);
+    bool isEmpty();
     void calculate();
 };

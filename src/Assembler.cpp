@@ -14,6 +14,7 @@ using namespace std;
 Section *Assembler::currentSection = nullptr;
 short int Assembler::LC = 0;
 bool Assembler::run = true;
+TNS * Assembler::tns = new TNS();
 
 Assembler::Assembler(string file_path)
 {
@@ -22,7 +23,6 @@ Assembler::Assembler(string file_path)
     //currentSection = nullptr;
     file = ifstream(file_path);
     symbol_table = SymbolTable::getInstance();
-    tns = nullptr;
     run = true;
 };
 
@@ -83,6 +83,10 @@ void Assembler::assamble()
         symbol_table->print();
         symbol_table->printAllSectionContents();
 
+        symbol_table->backPatch();
+
+        symbol_table->printAllSectionContents();
+
         cout << "Exited with status " << status << endl;
     }
     catch (const char *msg)
@@ -90,7 +94,8 @@ void Assembler::assamble()
         cerr << "Error at line " << line_number << ":" << endl;
         cerr << msg << endl;
     }
-    catch (string error){
+    catch (string error)
+    {
         cerr << "Error at line " << line_number << ":" << endl;
         cerr << error << endl;
     }

@@ -33,6 +33,7 @@ public:
     OperandType type;
     AddressingType adressing;
     RegisterPart registerPart;
+    OperandSize operandSize;
 
     string op_reg;
     string op_simbol;

@@ -101,7 +101,7 @@ void ListDirective::assamble()
                         //   CREATE forward link                     //
                         ///////////////////////////////////////////////
 
-                        symbol->addToForwardList(offset);
+                        symbol->addToForwardList(offset, currentSection, size);
                         value = 0;
                     }
                 }
@@ -112,7 +112,7 @@ void ListDirective::assamble()
                     ///////////////////////////////////////////////
                     symbol = new Symbol(elem.value, currentSection, false, 0, 'l');
                     SymbolTable::getInstance()->addSymbol(symbol);
-                    symbol->addToForwardList(offset);
+                    symbol->addToForwardList(offset, currentSection, size);
 
                     value = 0;
                 }

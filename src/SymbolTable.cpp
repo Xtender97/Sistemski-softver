@@ -83,11 +83,25 @@ void SymbolTable::printAllSectionContents()
                 cout << endl;
                 ((Section *)elem.second)->relocationTable->print();
 
-
                 cout << endl;
             }
         }
     }
 };
 
-
+void SymbolTable::backPatch()
+{
+    for (auto elem : symbolTable)
+    {
+        if (!elem.second->forwardList.empty())
+        {
+            if(!elem.second->isDefined && elem.second->section->name != ".und"){
+                throw "Symbol " + elem.second->name + " wasn't defined!";
+            }
+            for (auto el : elem.second->forwardList)
+            {
+                ((Section *)el.section)->content->replace(el.offset, el.size, elem.second->value);
+            }
+        }
+    }
+};

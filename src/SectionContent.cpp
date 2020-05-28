@@ -24,13 +24,19 @@ void SectionContent::print()
     for (auto elem : content)
     {
         //cout<< "No conversion:" << (int)elem << " ";
-        cout << hex << right<< setfill('0')<< setw(2) << (int)elem << " ";
+        cout << hex << right << setfill('0') << setw(2) << (int)elem << " ";
     }
 
     cout << endl;
 }
 
-void SectionContent::replace(int index, int size, unsigned char * content){
-    for(int i = index, j=0; j < size ; i++, j++)
-        content[i] = content[j];
+void SectionContent::replace(int index, int size, short int replacement)
+{
+    unsigned char bytes[size];
+    for (int i = 0; i < size; i++)
+    {
+        bytes[i] = (replacement >> (i * 8));//rotated to little endian here
+    }
+    for (int i = index, j = 0; j < size; i++, j++) 
+        content[i] = bytes[j];
 };

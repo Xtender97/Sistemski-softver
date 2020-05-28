@@ -1,6 +1,10 @@
 #include "../headers/EquDirective.h"
 #include <regex>
 #include "../headers/regex.h"
+#include "../headers/SymbolTable.h"
+#include "../headers/TNSRow.h"
+#include "../headers/TNS.h"
+#include "../headers/Assembler.h"
 
 EquDirective::EquDirective(string name, string equ_simbol, string expr, string label) : Directive(name, label)
 {
@@ -22,21 +26,44 @@ EquDirective::EquDirective(string name, string equ_simbol, string expr, string l
         {
             type = LITERAL_ELEM;
         }
-        ExpressionElem exp = {sign,type, elem};
+        ExpressionElem exp = {sign, type, elem};
         expression_list.push_back(exp);
         expr = match.suffix();
     }
 };
 
-void EquDirective::print(){
+void EquDirective::print()
+{
     Directive::print();
     int i = 0;
 
     for (auto elem : expression_list)
     {
         i++;
-        cout << "Element " << i << ". : " << elem.value << " of type " << (elem.type? "SIMBOL":"LITERAL") << " with sign: " << (elem.sign? "MINUS":"PLUS") <<  endl;
+        cout << "Element " << i << ". : " << elem.value << " of type " << (elem.type ? "SIMBOL" : "LITERAL") << " with sign: " << (elem.sign ? "MINUS" : "PLUS") << endl;
     };
 
     cout << endl;
+}
+
+void EquDirective::assamble()
+{
+
+    if (SymbolTable::getInstance()->symbolExists(simbol_name)) //POSTOJI U TABELI SIMBOLA
+    {
+    }
+    else// NE POSTOJI U TABELI SIMBOLA
+    {
+        TNSRow * row = new TNSRow(simbol_name, expression_list);
+
+        if(row->canBeCalculated()){// add to symbol table
+            short int value = row->calculateExpression();
+            Symbol * symbol = new Symbol(simbol_name,Assembler::currentSection, true, value, 'l' );
+            symbol->setEQUDefinition();
+            SymbolTable::getInstance()->addSymbol(symbol);
+        }
+        else{// add to TNS
+            Assembler::tns->add(row);
+        }
+    }
 }

@@ -15,6 +15,7 @@ Symbol::Symbol(string name, Symbol *section_serial, bool isDefinition, int val, 
     }
     this->scope = scope;
     this->serialNumber = serialNumber;
+    definedInEQU = false;
 }
 
 Symbol::Symbol(string name, Symbol *section_serial, bool isDefinition, int val, char scope)
@@ -27,11 +28,13 @@ Symbol::Symbol(string name, Symbol *section_serial, bool isDefinition, int val, 
         value = val;
     }
     this->scope = scope;
+    definedInEQU = false;
 }
 
-void Symbol::addToForwardList(int offset)
+void Symbol::addToForwardList(int offset, Symbol *section, int nmbOfBytes)
 {
-    forwardList.push_back(offset);
+    forwardListElem elem = {offset, nmbOfBytes, section};
+    forwardList.push_back(elem);
 }
 
 void Symbol::print()
@@ -48,9 +51,12 @@ void Symbol::print()
     }
 
     printElement(isDefined, 10);
-    if(isDefined)
-    {printElement(value, 16);
-    }else{
+    if (isDefined)
+    {
+        printElement(value, 16);
+    }
+    else
+    {
         printElement(-1, 16);
     }
     printElement(scope, 10);
@@ -62,7 +68,7 @@ void Symbol::print()
     {
         for (auto elem : forwardList)
         {
-            printElement(elem, 8);
+            printElement(elem.offset, 8);
             cout << " ";
         }
     }
@@ -72,4 +78,9 @@ void Symbol::print()
 void Symbol::setSerialNumber(int serial)
 {
     serialNumber = serial;
+};
+
+void Symbol::setEQUDefinition()
+{
+    definedInEQU = true;
 };

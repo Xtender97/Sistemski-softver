@@ -334,7 +334,7 @@ short int Operand::size()
         return 3;
     }
 
-    if (adressing == IMMEDIATE)
+    if (adressing == IMMEDIATE && operandSize == IMPLICIT)
     {
         if (type == SIMBOL)
         { // simbol predstavlja adresu mora da bude 16bita
@@ -352,7 +352,17 @@ short int Operand::size()
             }
         }
     }
+    if (adressing == IMMEDIATE && operandSize == BYTE)
+    { //
+        return 2;
+    }
+    if (adressing == IMMEDIATE && operandSize == WORD)
+    {
+        return 3;
+    }
 
+    cout << "ERROR" << endl;
+    cout << operandSize << endl;
     return 0; // greska
 };
 
@@ -369,16 +379,15 @@ vector<unsigned char> Operand::operandValue(int offsetFromBeginningOfInstruction
     {
         OpDescr |= 0x01;
     }
-    opCode.push_back(OpDescr); //vrv ce da pukne ovde
+    opCode.push_back(OpDescr);
 
     short int offset = Assembler::LC;
     offset += offsetFromBeginningOfInstruction;
     short int value = 0;
     Section *currentSection = Assembler::currentSection;
-    int size = 0;
+    int opSize = size() - 1; // size of operand minus descrpitor
     if (type == SIMBOL || type == SIMBOL_REGISTER)
     {
-        size = 2;
         Symbol *symbol = SymbolTable::getInstance()->getSymbol(op_simbol);
         if (symbol != nullptr) //exists in table
         {
@@ -388,7 +397,7 @@ vector<unsigned char> Operand::operandValue(int offsetFromBeginningOfInstruction
             }
             else
             { //not defined symbol
-                symbol->addToForwardList(offset);
+                symbol->addToForwardList(offset, currentSection, opSize);
                 value = 0;
             }
         }
@@ -396,46 +405,36 @@ vector<unsigned char> Operand::operandValue(int offsetFromBeginningOfInstruction
         {
             symbol = new Symbol(op_simbol, currentSection, false, 0, 'l');
             SymbolTable::getInstance()->addSymbol(symbol);
-            symbol->addToForwardList(offset);
+            symbol->addToForwardList(offset, currentSection, opSize);
 
             value = 0;
         }
 
         RelocationRecord *relocation;
+        RelocationType type = R_386_32;
+
+        if (adressing == REGISTER_INDIRECT_WITH_OFFSET && (op_reg == "r7" || op_reg == "pc"))
+        {
+            type = R_386_PC32;
+        }
+
         if (symbol->scope == 'g')
         {
-            relocation = new RelocationRecord(offset, R_386_32, symbol);
+            relocation = new RelocationRecord(offset, type, symbol);
         }
         else
         { //global symbol, reference section
-            relocation = new RelocationRecord(offset, R_386_32, currentSection);
+            relocation = new RelocationRecord(offset, type, currentSection);
         }
         currentSection->addRelocation(relocation);
     }
     if (type == LITERAL_REGISTER || type == LITERAL)
     {
-        cout << "U LITERAL DELU IFAAAAAAA" << endl;
         value = stoi(op_literal);
         // cout << "VREDNOST LITERALA JE ********************************" + value << endl;
-        if (adressing == IMMEDIATE)
-        {
-            if (value < 256)
-            {
-                size = 1;
-            }
-            else
-            {
-                size = 2;
-            }
-        }
-        else
-        {
-            size = 2;
-        }
-        cout << "U LITERAL DELU IFAAAAAAA" << endl;
     }
 
-    for (int i = size - 1; i >= 0; i--)
+    for (int i = opSize - 1; i >= 0; i--)
     {
         opCode.push_back(value >> (i * 8));
         cout << "operand" << endl;

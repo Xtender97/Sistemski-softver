@@ -16,7 +16,7 @@ public:
 
     void append(unsigned char * content, int size);
 
-    void replace(int index, int size, unsigned char * content);
+    void replace(int index, int size, short int replacement);
 
     void print();
 

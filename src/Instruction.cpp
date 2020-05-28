@@ -51,6 +51,16 @@ Instruction::Instruction(string mnemonic, string opOne, string opTwo, string lab
     {
         operandTwo = Operand(opTwo, type);
     }
+
+    if (numberOfOperands == 2 && operandTwo.adressing == IMMEDIATE)
+    {
+        throw "Destination argument can't be immediate!";
+    }
+
+    if (numberOfOperands == 1 && name != "push" && operandOne.adressing == IMMEDIATE)
+    {
+        throw "Destination argument can't be immediate! " + operandOne.stringOperand;
+    }
 };
 
 // SETS OPERAND SIZES BASED ON INSTRUCTIN MNEMONIC EXTENSION w or b
@@ -60,6 +70,22 @@ void Instruction::setOperandSizes(string size)
     if (!size.empty())
     {
         sizeOfOperands = size == "b" ? OperandSize::BYTE : OperandSize::WORD;
+    }
+    else
+    {
+        sizeOfOperands = IMPLICIT;
+    }
+
+    if (numberOfOperands >= 1)
+    {
+        cout << "SETS OPERAND 1 SIZE" << endl;
+        operandOne.operandSize = sizeOfOperands;
+    }
+    if (numberOfOperands == 2)
+    {
+        cout << "SETS OPERAND 2 SIZE" << endl;
+
+        operandTwo.operandSize = sizeOfOperands;
     }
 }
 
@@ -122,6 +148,7 @@ Instruction *createInstruction(string line, string label)
     if (regex_match(line, match, regex_single_operand_jump_instruction))
     {
         instruction = new Instruction(match.str(1), match.str(2), "", label);
+        instruction->setOperandSizes("");
         instruction->print();
     }
 
@@ -184,10 +211,10 @@ void Instruction::assamble()
     // cout << hex << right << setfill('0') << setw(2) << (int)InstrDescr << " ";
     vector<unsigned char> op1;
     vector<unsigned char> op2;
-    if (numberOfOperands ==1)
+    if (numberOfOperands == 1)
     {
 
-        op1 = operandOne.operandValue(0);// because little endian
+        op1 = operandOne.operandValue(0); // because little endian
     }
     if (numberOfOperands == 2)
     {
@@ -197,12 +224,10 @@ void Instruction::assamble()
 
     vector<unsigned char> instructionOpCode;
     instructionOpCode.push_back(InstrDescr);
-    cout << 1 << endl;
     instructionOpCode.insert(instructionOpCode.end(), op1.begin(), op1.end());
     if (numberOfOperands == 2)
     {
         instructionOpCode.insert(instructionOpCode.end(), op2.begin(), op2.end());
-        cout << 2 << endl;
     }
 
     int i = 0;
@@ -211,8 +236,6 @@ void Instruction::assamble()
     for (auto elem : instructionOpCode)
     {
         bytes[i++] = elem;
-        cout << i << " " << endl;
     }
-    cout << instructionSize << " velicina " << endl;
     Assembler::currentSection->addContent(bytes, instructionSize);
 }

@@ -17,4 +17,5 @@ public:
     string simbol_name;
     EquDirective(string name, string equ_simbol, string expr, string label);
     void print();
+    void assamble();
 };

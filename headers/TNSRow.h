@@ -5,11 +5,11 @@
 
 
 class TNSRow{
-
+public:
     std::string symbol;
-    vector<ExpressionElem> expresion;
+    vector<ExpressionElem> expression;
 
-    TNSRow(string symbol, ExpressionElem expression);
+    TNSRow(string symbol, vector<ExpressionElem> expression);
 
     int calculateExpression();
 
