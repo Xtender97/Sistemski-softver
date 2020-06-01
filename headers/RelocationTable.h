@@ -1,6 +1,7 @@
 #pragma once
 #include "RelocationRecord.h"
 
+
 class RelocationTable
 {
 public:

@@ -57,10 +57,10 @@ Instruction::Instruction(string mnemonic, string opOne, string opTwo, string lab
         throw "Destination argument can't be immediate!";
     }
 
-    if (numberOfOperands == 1 && name != "push" && operandOne.adressing == IMMEDIATE)
-    {
-        throw "Destination argument can't be immediate! " + operandOne.stringOperand;
-    }
+    // if (numberOfOperands == 1 && name != "push" && operandOne.adressing == IMMEDIATE)
+    // {
+    //     throw "Destination argument can't be immediate! " + operandOne.stringOperand;
+    // }
 };
 
 // SETS OPERAND SIZES BASED ON INSTRUCTIN MNEMONIC EXTENSION w or b
@@ -214,12 +214,12 @@ void Instruction::assamble()
     if (numberOfOperands == 1)
     {
 
-        op1 = operandOne.operandValue(0); // because little endian
+        op1 = operandOne.operandValue(2, this); // because little endian
     }
     if (numberOfOperands == 2)
     {
-        op1 = operandOne.operandValue(operandTwo.size());
-        op2 = operandTwo.operandValue(0);
+        op1 = operandOne.operandValue(2, this);
+        op2 = operandTwo.operandValue(op1.size()+1+1, this);
     }
 
     vector<unsigned char> instructionOpCode;

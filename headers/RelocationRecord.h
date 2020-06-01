@@ -12,8 +12,9 @@ public:
     short int offset;
     RelocationType type;
     Symbol *symbol;
+    bool local;
 
-    RelocationRecord(short int offset, RelocationType type, Symbol *symbol);
+    RelocationRecord(short int offset, RelocationType type, Symbol *symbol, bool local);
 
     void print();
 };

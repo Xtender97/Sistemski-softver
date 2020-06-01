@@ -10,7 +10,7 @@ SectionContent::SectionContent(string name)
 
 void SectionContent::append(unsigned char *content, int size)
 {
-    for (int i = size - 1; i >= 0; i--)
+    for (int i = 0; i <= size - 1; i++)
     {
         this->content.push_back(content[i]);
     }
@@ -32,11 +32,25 @@ void SectionContent::print()
 
 void SectionContent::replace(int index, int size, short int replacement)
 {
+
+    short int currentValue = 0;
+    for (int i = index; i < size+index; i++)
+    {
+        currentValue |= (content[i] << (i - index) * 8);
+    }
+
+    // cout << "Trenutna vrednost tokom: " << currentValue << endl;
+
+    replacement += currentValue;
+
+    //cout << "Vrednost sa kojom menjam " << replacement << endl;
+
     unsigned char bytes[size];
     for (int i = 0; i < size; i++)
     {
-        bytes[i] = (replacement >> (i * 8));//rotated to little endian here
+        bytes[i] = (replacement >> (i * 8)); //rotated to little endian here
     }
-    for (int i = index, j = 0; j < size; i++, j++) 
+
+    for (int i = index, j = 0; j < size; i++, j++)
         content[i] = bytes[j];
 };

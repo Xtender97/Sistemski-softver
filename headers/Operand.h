@@ -4,8 +4,10 @@
 #include <vector>
 #include "Enums.h"
 
+
 using namespace std;
 
+class Instruction;
 
 
 struct OperandInfo
@@ -53,5 +55,5 @@ public:
     OperandInfo extractDataDoubleOperand(string operand);
     void print();
     short int size();
-    vector<unsigned char> operandValue(int offsetFromBeginningOfInstruction);
+    vector<unsigned char> operandValue(int offsetFromBeginningOfInstruction, Instruction* instruction);
 };

@@ -1,6 +1,7 @@
 #include "../headers/Symbol.h"
 #include <iostream>
 #include "../headers/print.h"
+#include "../headers/RelocationRecord.h"
 
 using namespace std;
 
@@ -15,7 +16,9 @@ Symbol::Symbol(string name, Symbol *section_serial, bool isDefinition, int val, 
     }
     this->scope = scope;
     this->serialNumber = serialNumber;
-    definedInEQU = false;
+    equDefined = false;
+    relocationType = nullptr;
+
 }
 
 Symbol::Symbol(string name, Symbol *section_serial, bool isDefinition, int val, char scope)
@@ -28,7 +31,8 @@ Symbol::Symbol(string name, Symbol *section_serial, bool isDefinition, int val, 
         value = val;
     }
     this->scope = scope;
-    definedInEQU = false;
+    equDefined = false;
+    relocationType = nullptr;
 }
 
 void Symbol::addToForwardList(int offset, Symbol *section, int nmbOfBytes)
@@ -36,6 +40,11 @@ void Symbol::addToForwardList(int offset, Symbol *section, int nmbOfBytes)
     forwardListElem elem = {offset, nmbOfBytes, section};
     forwardList.push_back(elem);
 }
+
+void Symbol::addToOffsetList(RelocationRecord *record)
+{
+    allOffsets.push_back(record);
+};
 
 void Symbol::print()
 {
@@ -72,6 +81,17 @@ void Symbol::print()
             cout << " ";
         }
     }
+
+    cout << " | ";
+
+    if (!allOffsets.empty())
+    {
+        for (auto elem : allOffsets)
+        {
+            printElement(elem->offset, 8);
+            cout << " ";
+        }
+    }
     cout << endl;
 }
 
@@ -80,7 +100,10 @@ void Symbol::setSerialNumber(int serial)
     serialNumber = serial;
 };
 
-void Symbol::setEQUDefinition()
-{
-    definedInEQU = true;
+void Symbol::setEquDefined(){
+    equDefined = true;
+};
+
+void Symbol::setRelocationType(RelocationRecord* record){
+    relocationType = record;
 };

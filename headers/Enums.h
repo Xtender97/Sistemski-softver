@@ -76,6 +76,7 @@ enum Sign
 };
 
 enum RelocationType{
-    R_386_32,
-    R_386_PC32
+    R_386_8,
+    R_386_16,
+    R_386_PC16
 };

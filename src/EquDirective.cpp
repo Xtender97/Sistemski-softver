@@ -8,7 +8,7 @@
 
 EquDirective::EquDirective(string name, string equ_simbol, string expr, string label) : Directive(name, label)
 {
-    simbol_name = simbol;
+    simbol_name = equ_simbol;
     regex regex_expression("(\\+|-)?\\s?(" + simbol + "|" + literal + ")\\s?");
     smatch match;
     while (regex_search(expr, match, regex_expression))
@@ -48,21 +48,32 @@ void EquDirective::print()
 
 void EquDirective::assamble()
 {
+    Section *currentSection = Assembler::currentSection;
+    Symbol *symbol= SymbolTable::getInstance()->getSymbol(simbol_name);
 
-    if (SymbolTable::getInstance()->symbolExists(simbol_name)) //POSTOJI U TABELI SIMBOLA
+    if (symbol) //POSTOJI U TABELI SIMBOLA
     {
     }
-    else// NE POSTOJI U TABELI SIMBOLA
+    else // NE POSTOJI U TABELI SIMBOLA
     {
-        TNSRow * row = new TNSRow(simbol_name, expression_list);
+        TNSRow *row = new TNSRow(simbol_name, expression_list);
 
-        if(row->canBeCalculated()){// add to symbol table
+        if (row->canBeCalculated())
+        { // add to symbol table
             short int value = row->calculateExpression();
-            Symbol * symbol = new Symbol(simbol_name,Assembler::currentSection, true, value, 'l' );
-            symbol->setEQUDefinition();
+            if (currentSection != nullptr)
+            {
+                symbol = new Symbol(simbol_name, currentSection, true, value, 'l');
+            }
+            else
+            {
+                symbol = new Symbol(simbol_name, SymbolTable::getInstance()->getSymbol(".und") , true, value, 'l');
+            }
+            //symbol->setEQUDefinition();
             SymbolTable::getInstance()->addSymbol(symbol);
         }
-        else{// add to TNS
+        else
+        { // add to TNS
             Assembler::tns->add(row);
         }
     }

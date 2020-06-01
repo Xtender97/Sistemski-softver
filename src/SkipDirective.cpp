@@ -24,6 +24,6 @@ void SkipDirective::assamble()
     {
         bytes[size() - 1 - i] = 0x00;
     }
-
+cout << "adding" << endl;
     Assembler::currentSection->addContent(bytes, size());
 }

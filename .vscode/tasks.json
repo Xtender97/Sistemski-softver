@@ -42,7 +42,7 @@
         {
             "type": "shell",
             "label": "Run build",
-            "command": "${workspaceFolder}/build/main.o"
+            "command": "${workspaceFolder}/build/main.o ${input:param1}"
         },
         {
             "type": "shell",
@@ -58,5 +58,13 @@
                 "cwd": "/usr/bin"
             }
         }
+    ],
+    "inputs": [
+        {
+            "id": "param1",
+            "description": "Param1:",
+            "default": "files/smalltest.s",
+            "type": "promptString"
+        },
     ]
 }

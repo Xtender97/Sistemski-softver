@@ -7,7 +7,7 @@
 SymbolTable::SymbolTable()
 {
     max_serial = 0;
-    symbolTable["und"] = new Section("und", true, 0, 'l', max_serial);
+    symbolTable[".und"] = new Section("und", true, 0, 'l', max_serial);
     max_serial++;
 }
 

@@ -2,6 +2,7 @@
 #include <regex>
 #include "../headers/regex.h"
 #include "../headers/Assembler.h"
+#include "../headers/Instruction.h"
 
 string Operand::addressingType[] = {
     "IMMEDIATE",
@@ -366,7 +367,7 @@ short int Operand::size()
     return 0; // greska
 };
 
-vector<unsigned char> Operand::operandValue(int offsetFromBeginningOfInstruction)
+vector<unsigned char> Operand::operandValue(int offsetFromBeginningOfInstruction, Instruction* instruction)
 {
     vector<unsigned char> opCode;
     unsigned char OpDescr = 0x00;
@@ -411,22 +412,32 @@ vector<unsigned char> Operand::operandValue(int offsetFromBeginningOfInstruction
         }
 
         RelocationRecord *relocation;
-        RelocationType type = R_386_32;
+        RelocationType type = R_386_16;
 
         if (adressing == REGISTER_INDIRECT_WITH_OFFSET && (op_reg == "r7" || op_reg == "pc"))
         {
-            type = R_386_PC32;
+            type = R_386_PC16;
+            if(offsetFromBeginningOfInstruction > 2){// drugi operand
+                value -= 2;
+            }
+            else{//prvi operand
+                value -= 2;
+                if(instruction->numberOfOperands ==2){
+                    value -= instruction->operandTwo.size();
+                }
+            }
         }
 
         if (symbol->scope == 'g')
         {
-            relocation = new RelocationRecord(offset, type, symbol);
+            relocation = new RelocationRecord(offset, type, symbol, false);
         }
         else
         { //global symbol, reference section
-            relocation = new RelocationRecord(offset, type, currentSection);
+            relocation = new RelocationRecord(offset, type, symbol, true);
         }
         currentSection->addRelocation(relocation);
+        //symbol->addToOffsetList(relocation);
     }
     if (type == LITERAL_REGISTER || type == LITERAL)
     {
@@ -434,7 +445,7 @@ vector<unsigned char> Operand::operandValue(int offsetFromBeginningOfInstruction
         // cout << "VREDNOST LITERALA JE ********************************" + value << endl;
     }
 
-    for (int i = opSize - 1; i >= 0; i--)
+    for (int i = 0; i <= opSize - 1; i++)
     {
         opCode.push_back(value >> (i * 8));
         cout << "operand" << endl;

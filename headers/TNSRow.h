@@ -14,4 +14,6 @@ public:
     int calculateExpression();
 
     bool canBeCalculated();
+
+    //RelocationRecord* findRelocationType();
 };

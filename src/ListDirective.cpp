@@ -117,20 +117,28 @@ void ListDirective::assamble()
                     value = 0;
                 }
                 RelocationRecord *relocation;
+                RelocationType relType;
+                if(type == BYTE_DIRECTIVE){
+                    relType = R_386_8;
+                }
+                else{
+                    relType = R_386_16;
+                };
                 if (symbol->scope == 'g')
                 {
-                    relocation = new RelocationRecord(offset, R_386_32, symbol);
+                    relocation = new RelocationRecord(offset, relType, symbol, false);
                 }
                 else
-                { //global symbol reference section
-                    relocation = new RelocationRecord(offset, R_386_32, currentSection);
+                { //local symbol reference section
+                    relocation = new RelocationRecord(offset, relType, symbol, true);
                 }
                 currentSection->addRelocation(relocation);
+               // symbol->addToOffsetList(relocation);
             }
             else
             { //LITERAL
                 value = stoi(elem.value);
-                if (value > 255)
+                if (value > 255 && type == BYTE_DIRECTIVE)
                 {
                     throw "Operand of byte directive bigger then 255!";
                 }
@@ -138,7 +146,7 @@ void ListDirective::assamble()
             unsigned char bytes[size];
             for (int i = 0; i < size; i++)
             {
-                bytes[size - 1 - i] = (value >> (i * 8));
+                bytes[i] = (value >> (i * 8));
             }
 
             currentSection->addContent(bytes, size);
@@ -170,7 +178,7 @@ void ListDirective::assamble()
         }
         else
         {
-            Section *undSection = (Section *)SymbolTable::getInstance()->getSymbol("und");
+            Section *undSection = (Section *)SymbolTable::getInstance()->getSymbol(".und");
             for (auto elem : directive_list)
             { // always symbol regex
                 string symbol_name = elem.value;
