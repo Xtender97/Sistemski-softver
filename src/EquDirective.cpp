@@ -49,10 +49,22 @@ void EquDirective::print()
 void EquDirective::assamble()
 {
     Section *currentSection = Assembler::currentSection;
-    Symbol *symbol= SymbolTable::getInstance()->getSymbol(simbol_name);
-
+    Symbol *symbol = SymbolTable::getInstance()->getSymbol(simbol_name);
     if (symbol) //POSTOJI U TABELI SIMBOLA
     {
+        TNSRow *row = new TNSRow(simbol_name, expression_list);
+        if (row->canBeCalculated())
+        {
+            Section *symbolRelocatableSection = row->findRelocationType();
+            short int value = row->calculateExpression();
+            symbol->value = value;
+            symbol->isDefined = true;
+            symbol->section = symbolRelocatableSection;
+        }
+        else
+        {
+            Assembler::tns->add(row);
+        }
     }
     else // NE POSTOJI U TABELI SIMBOLA
     {
@@ -60,15 +72,10 @@ void EquDirective::assamble()
 
         if (row->canBeCalculated())
         { // add to symbol table
+            Section *symbolRelocatableSection = row->findRelocationType();
             short int value = row->calculateExpression();
-            if (currentSection != nullptr)
-            {
-                symbol = new Symbol(simbol_name, currentSection, true, value, 'l');
-            }
-            else
-            {
-                symbol = new Symbol(simbol_name, SymbolTable::getInstance()->getSymbol(".und") , true, value, 'l');
-            }
+            symbol = new Symbol(simbol_name, symbolRelocatableSection, true, value, 'l');
+
             //symbol->setEQUDefinition();
             SymbolTable::getInstance()->addSymbol(symbol);
         }

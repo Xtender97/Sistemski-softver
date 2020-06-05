@@ -12,5 +12,7 @@ public:
 
     void print();
 
+    void printToFile();
+
     void addRelocation(RelocationRecord * relocation);
 };

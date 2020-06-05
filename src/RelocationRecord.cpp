@@ -29,3 +29,17 @@ void RelocationRecord::print()
     }
     cout << endl;
 };
+
+void RelocationRecord::printToFile(){
+    printElementToFile(offset, 16);
+    printElementToFile(RelocationTypeMap[type], 15);
+    if (!local)
+    {
+        printElementToFile(symbol->serialNumber, 15);
+    }
+    else
+    {
+        printElementToFile(symbol->section->serialNumber, 15);
+    }
+    Assembler::outputFile << endl;
+}

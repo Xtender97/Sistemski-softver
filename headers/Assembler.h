@@ -17,13 +17,14 @@ public:
     static short int LC;
     static bool run;
     ifstream file;
+    static ofstream outputFile;
     SymbolTable* symbol_table;
     static TNS* tns;
 
 
     static Section *currentSection;
 
-    Assembler(string file_path);
+    Assembler(string file_path, string output_file_path);
 
     void assamble();
 

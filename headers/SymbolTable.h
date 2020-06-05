@@ -19,19 +19,27 @@ public:
 
     unordered_map<string, Symbol *> symbolTable;
 
+    vector<Symbol *> sortedMap;
+
     void backPatch(); // not implemented
 
     void addSymbol(Symbol *symbol);
 
     bool symbolExists(string symbol_name);
 
-    Symbol * getSymbol(string symbol_name);
+    Symbol *getSymbol(string symbol_name);
 
     void sort(); // not implemented
 
     void print();
 
+    void printSortedTable();
+
     void printAllSectionContents();
 
     void printAllRelocationTables();
+
+    void printToFile();
+
+    void printToFileSectionsAndRelocations();
 };

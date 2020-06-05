@@ -8,6 +8,7 @@ public:
 
     TNS();
     void add(TNSRow* row);
+    void remove(TNSRow* row);
     bool isEmpty();
     void calculate();
 };

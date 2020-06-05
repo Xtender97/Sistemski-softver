@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "EquDirective.h"
+#include "Section.h"
 
 
 class TNSRow{
@@ -15,5 +16,5 @@ public:
 
     bool canBeCalculated();
 
-    //RelocationRecord* findRelocationType();
+    Section* findRelocationType();
 };

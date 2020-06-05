@@ -1,0 +1,49 @@
+#Tabela simbola                                                                                     
+#Name                    Section   Value           Scope     SerialNumber        
+.und                     0         0               l         0                   
+.data                    1         0               l         1                   
+.text                    2         0               l         2                   
+l3                       2         3               g         3                   
+data_reloc               1         37              g         4                   
+l4                       0         -1              g         5                   
+l5                       0         -1              g         6                   
+const                    0         8               l         7                   
+b                        0         -25             l         8                   
+l1                       2         2               l         9                   
+apsolut                  0         -1              l         10                  
+text_reloc               2         12              l         11                  
+labela                   1         27              l         12                  
+extern                   0         4               l         13                  
+
+#.ret.data
+#offset         tip            Serial number  
+2               R_386_PC16     2              
+12              R_386_PC16     2              
+20              R_386_16       2              
+23              R_386_8        1              
+24              R_386_8        2              
+25              R_386_8        3              
+26              R_386_8        5              
+27              R_386_16       1              
+29              R_386_16       2              
+31              R_386_16       3              
+33              R_386_16       5              
+37              R_386_16       0              
+
+
+#.ret.text
+#offset         tip            Serial number  
+3               R_386_16       2              
+7               R_386_16       4              
+
+
+#.data
+ 
+64 6e fd ff  80 05 00 64  80 05 00 6e  00 00 2c 6e  
+fd ff 64 80  0c 00 48 1b  02 03 00 1b  00 02 00 03  
+00 00 00 0f  00 04 00 ff  ff 
+
+#.text
+ 
+4c 44 96 02  00 14 00 25  00 08 00 
+

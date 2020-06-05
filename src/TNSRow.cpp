@@ -1,6 +1,7 @@
 #include "../headers/TNSRow.h"
 #include "../headers/SymbolTable.h"
 #include <unordered_map>
+#include "../headers/Section.h"
 
 TNSRow::TNSRow(string symbol, vector<ExpressionElem> expression)
 {
@@ -55,7 +56,13 @@ bool TNSRow::canBeCalculated()
                 }
                 else
                 {
-                    return false;
+                    if (symbol->scope == 'g' && symbol->section->name == ".und")
+                    { // ako je extern simbol
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
             else
@@ -67,11 +74,62 @@ bool TNSRow::canBeCalculated()
     return true;
 };
 
-// RelocationRecord * TNSRow::findRelocationType(){
+Section *TNSRow::findRelocationType()
+{
 
-//     unordered_map<string,int> classificationTable;
-//     for(auto elem: expression){
+    unordered_map<Section *, int> classificationTable;
+    for (auto elem : expression)
+    {
+        if (elem.type == SIMBOL_ELEM)
+        {
+            Section *sectionOfSymbol = (Section *)SymbolTable::getInstance()->getSymbol(elem.value)->section;
 
-//     }
+            if (classificationTable.find(sectionOfSymbol) == classificationTable.end())
+            { // nova sekcija
+                if (elem.sign == PLUS || sectionOfSymbol->name == ".und")
+                {
+                    classificationTable[sectionOfSymbol] = 1;
+                }
+                else
+                {
 
-// };
+                    classificationTable[sectionOfSymbol] = -1;
+                }
+            }
+            else
+            {
+
+                if (elem.sign == PLUS || sectionOfSymbol->name == ".und")
+                {
+                    classificationTable[sectionOfSymbol]++;
+                }
+                else
+                {
+                    classificationTable[sectionOfSymbol]--;
+                }
+            }
+        }
+    }
+
+    Section *relocationSection = nullptr;
+
+    for (auto elem : classificationTable)
+    {
+        if (elem.second > 1 || elem.second < 0)
+        {
+            throw "Invalid definition in equ directive! Classification for section: " + elem.first->name;
+        }
+
+        if (relocationSection != nullptr && elem.second == 1)
+        {
+            throw "Invalid definition in equ directive! Relocatable for multiple sections!";
+        }
+
+        if (relocationSection == nullptr && elem.second == 1)
+        {
+            relocationSection = elem.first;
+        }
+    }
+
+    return relocationSection;
+};

@@ -6,7 +6,6 @@
 class RelocationRecord
 {
 
-
 public:
     static vector<string> RelocationTypeMap;
     short int offset;
@@ -17,4 +16,6 @@ public:
     RelocationRecord(short int offset, RelocationType type, Symbol *symbol, bool local);
 
     void print();
+
+    void printToFile();
 };

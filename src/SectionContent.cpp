@@ -1,4 +1,5 @@
 #include "../headers/SectionContent.h"
+#include "../headers/Assembler.h"
 #include <string>
 #include <iomanip>
 #include <iostream>
@@ -28,6 +29,27 @@ void SectionContent::print()
     }
 
     cout << endl;
+}
+
+
+void SectionContent::printToFile()
+{
+
+    Assembler::outputFile << "#." << this->sectionName << endl;
+    int i =-1;
+    for (auto elem : content)
+    {
+        i++;
+        if(i % 4 == 0) {
+            Assembler::outputFile << " ";
+        }
+        if(i % 16 == 0){
+            Assembler::outputFile << endl;
+        }
+        Assembler::outputFile << hex << right << setfill('0') << setw(2) << (int)elem << " ";
+    }
+
+    Assembler::outputFile << endl;
 }
 
 void SectionContent::replace(int index, int size, short int replacement)

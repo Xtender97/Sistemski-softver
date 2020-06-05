@@ -14,14 +14,16 @@ using namespace std;
 Section *Assembler::currentSection = nullptr;
 short int Assembler::LC = 0;
 bool Assembler::run = true;
-TNS * Assembler::tns = new TNS();
+TNS *Assembler::tns = new TNS();
+ofstream Assembler::outputFile = ofstream();
 
-Assembler::Assembler(string file_path)
+Assembler::Assembler(string file_path, string output_file_path)
 {
     line_number = 0;
     LC = 0;
     //currentSection = nullptr;
     file = ifstream(file_path);
+    outputFile = ofstream(output_file_path);
     symbol_table = SymbolTable::getInstance();
     run = true;
 };
@@ -80,12 +82,19 @@ void Assembler::assamble()
             }
         }
 
-        symbol_table->print();
-        symbol_table->printAllSectionContents();
-
+        tns->calculate();
+        symbol_table->sort();
+        symbol_table->printSortedTable();
+        //symbol_table->print();
+        //symbol_table->printAllSectionContents();
         symbol_table->backPatch();
 
+        symbol_table->printToFile();
         symbol_table->printAllSectionContents();
+        symbol_table->printToFileSectionsAndRelocations();
+
+        
+
 
         cout << "Exited with status " << status << endl;
     }

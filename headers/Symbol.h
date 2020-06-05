@@ -47,6 +47,8 @@ public:
 
     void print();
 
+    void printToFile();
+
     void virtual setSerialNumber(int serial);
 
     void setEquDefined();

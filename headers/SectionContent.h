@@ -20,4 +20,6 @@ public:
 
     void print();
 
+    void printToFile();
+
 };

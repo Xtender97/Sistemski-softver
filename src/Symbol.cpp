@@ -56,7 +56,7 @@ void Symbol::print()
     }
     else
     {
-        printElement("nullptr", 10);
+        printElement("0", 10);
     }
 
     printElement(isDefined, 10);
@@ -81,18 +81,42 @@ void Symbol::print()
             cout << " ";
         }
     }
-
-    cout << " | ";
-
-    if (!allOffsets.empty())
-    {
-        for (auto elem : allOffsets)
-        {
-            printElement(elem->offset, 8);
-            cout << " ";
-        }
-    }
     cout << endl;
+}
+
+void Symbol::printToFile(){
+
+    printElementToFile(name, 25);
+    if (section)
+    {
+        printElementToFile(section->serialNumber, 10);
+    }
+    else
+    {
+        printElementToFile("0", 10);// ako je kontsantan simbol ispisi 0 znaci da je u und sekciji
+    }
+    if (isDefined)
+    {
+        printElementToFile(value, 16);
+    }
+    else
+    {
+        printElementToFile(-1, 16);// ispisi -1 ako simbol nije definisan
+    }
+    printElementToFile(scope, 10);
+    printElementToFile(serialNumber, 20);
+
+    //cout << "Symbol:" << name << " " << section << " " << isDefined << " " << value << " " << scope << " " << serialNumber << endl;
+
+    // if (!forwardList.empty())
+    // {
+    //     for (auto elem : forwardList)
+    //     {
+    //         printElement(elem.offset, 8);
+    //         cout << " ";
+    //     }
+    // }
+    Assembler::outputFile << endl;
 }
 
 void Symbol::setSerialNumber(int serial)
