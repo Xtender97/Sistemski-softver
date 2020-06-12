@@ -19,7 +19,6 @@ extern                   0         4               l         13
 #offset         tip            Serial number  
 2               R_386_PC16     2              
 12              R_386_PC16     2              
-16              R_386_PC16     0              
 20              R_386_16       2              
 23              R_386_8        1              
 24              R_386_8        2              

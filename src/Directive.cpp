@@ -10,10 +10,7 @@ unordered_map<string, DirectiveType> Directive::DirectiveTypesMap = {
     {"section", SECTION},
     {"byte", BYTE_DIRECTIVE},
     {"word", WORD_DIRECTIVE},
-    {"equ", EQU}
-};
-
-
+    {"equ", EQU}};
 
 Directive::Directive(string name, string label) : Line(!label.empty(), label, true, false)
 {
@@ -21,16 +18,25 @@ Directive::Directive(string name, string label) : Line(!label.empty(), label, tr
     type = DirectiveTypesMap[name];
 };
 
-void Directive::print(){
+void Directive::print()
+{
     Line::print();
     cout << "Directive type: " << directive_name << endl;
 };
 
-short int Directive::size(){
+short int Directive::size()
+{
     return 0;
 }
-void Directive::assamble(){
-    if(directive_name == "end"){
+void Directive::assamble()
+{
+    if (directive_name == "end")
+    {
+        if (Assembler::currentSection != nullptr)
+        {
+            Assembler::currentSection->setSize(Assembler::LC);
+            Assembler::LC = 0;
+        }
         Assembler::run = false;
     }
 }

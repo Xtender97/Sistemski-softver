@@ -47,7 +47,7 @@ public:
 
     void print();
 
-    void printToFile();
+    void virtual printToFile();
 
     void virtual setSerialNumber(int serial);
 

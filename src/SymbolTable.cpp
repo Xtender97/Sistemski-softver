@@ -175,7 +175,7 @@ void SymbolTable::printToFile()
     printElementToFile("#Name", 25);
     printElementToFile("Section", 10);
     // printElementToFile("isDefined", 10);
-    printElementToFile("Value", 16);
+    printElementToFile("Value/Size", 16);
     printElementToFile("Scope", 10);
     printElementToFile("SerialNumber", 20);
     // printElementToFile("ForwardList", 20);

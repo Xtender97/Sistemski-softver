@@ -23,4 +23,6 @@ public:
     void setSize(int size);
 
     void setSerialNumber(int serial);
+
+    void printToFile();
 };

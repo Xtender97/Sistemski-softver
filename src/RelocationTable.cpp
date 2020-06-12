@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../headers/Assembler.h"
 #include "../headers/print.h"
+#include "../headers/SymbolTable.h"
 
 RelocationTable::RelocationTable(string name)
 {
@@ -37,6 +38,12 @@ void RelocationTable::printToFile()
     {
         if (elem->symbol->section) // znaci da nije kontsantan simbol i treba ispisivati relokaciju inace je ne ispisivati
         {
+            elem->printToFile();
+        }
+
+        if(!elem->symbol->section && elem->type == R_386_PC16){
+            elem->symbol = SymbolTable::getInstance()->getSymbol(".und");
+
             elem->printToFile();
         }
     };

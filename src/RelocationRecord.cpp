@@ -25,12 +25,22 @@ void RelocationRecord::print()
     }
     else
     {
-        printElement(symbol->section->serialNumber, 15);
+        
+
+        if (symbol->section->name == ".und")
+        {
+            printElement(symbol->serialNumber, 15);
+        }
+        else
+        {
+            printElement(symbol->section->serialNumber, 15);
+        }
     }
     cout << endl;
 };
 
-void RelocationRecord::printToFile(){
+void RelocationRecord::printToFile()
+{
     printElementToFile(offset, 16);
     printElementToFile(RelocationTypeMap[type], 15);
     if (!local)
@@ -39,7 +49,14 @@ void RelocationRecord::printToFile(){
     }
     else
     {
-        printElementToFile(symbol->section->serialNumber, 15);
+        if (symbol->section->name == ".und")
+        {
+            printElementToFile(symbol->serialNumber, 15);
+        }
+        else
+        {
+            printElementToFile(symbol->section->serialNumber, 15);
+        }
     }
     Assembler::outputFile << endl;
 }

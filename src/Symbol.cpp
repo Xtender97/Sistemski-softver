@@ -66,7 +66,7 @@ void Symbol::print()
     }
     else
     {
-        printElement(-1, 16);
+        printElement(0, 16);
     }
     printElement(scope, 10);
     printElement(serialNumber, 20);
@@ -101,7 +101,7 @@ void Symbol::printToFile(){
     }
     else
     {
-        printElementToFile(-1, 16);// ispisi -1 ako simbol nije definisan
+        printElementToFile(0, 16);// ispisi 0 ako simbol nije definisan
     }
     printElementToFile(scope, 10);
     printElementToFile(serialNumber, 20);
